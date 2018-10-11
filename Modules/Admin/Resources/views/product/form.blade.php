@@ -1,429 +1,217 @@
- <form class="steps-state-saving" action="#">
-            <h6>Personal data</h6>
-            <fieldset>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Select location:</label>
-                    <select name="location" data-placeholder="Select position" class="select">
-                      <option></option>
-                      <optgroup label="North America">
-                        <option value="1">United States</option>
-                        <option value="2">Canada</option>
-                      </optgroup>
 
-                      <optgroup label="Latin America">
-                        <option value="3">Chile</option>
-                        <option value="4">Argentina</option>
-                        <option value="5">Colombia</option>
-                        <option value="6">Peru</option>
-                      </optgroup>
+    <fieldset class="step ui-formwizard-content" id="step1" style="display: block;">
 
-                      <optgroup label="Europe">
-                        <option value="8">Croatia</option>
-                        <option value="9">Hungary</option>
-                        <option value="10">Ukraine</option>
-                        <option value="11">Greece</option>
-                      </optgroup>
+        <div class="row">
 
-                      <optgroup label="Middle East &amp; Africa">
-                        <option value="21">Egypt</option>
-                        <option value="22">Israel</option>
-                        <option value="23">Nigeria</option>
-                        <option value="24">United Arab Emirates</option>
-                      </optgroup>
 
-                      <optgroup label="Asia Pacific">
-                        <option value="26">Australia</option>
-                        <option value="27">China</option>
-                        <option value="28">India</option>
-                        <option value="29">Singapore</option>
-                      </optgroup>
-                    </select>
-                  </div>
-                </div>
+        <div class="tabbable">
+                <ul class="nav nav-tabs nav-tabs-highlight">
+                <li class="active">
+                    <a href="#1" data-toggle="tab" aria-expanded="true">Product Details</a>
+                </li>
+                <li class="">
+                    <a href="#2" data-toggle="tab" aria-expanded="true">Product Meta Details</a>
+                </li>
 
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Select position:</label>
-                    <select name="position" data-placeholder="Select position" class="select">
-                      <option></option>
-                      <optgroup label="Developer Relations">
-                        <option value="1">Sales Engineer</option>
-                        <option value="2">Ads Solutions Consultant</option>
-                        <option value="3">Technical Solutions Consultant</option>
-                        <option value="4">Business Intern</option>
-                      </optgroup>
+                <li class="">
+                    <a href="#3" data-toggle="tab" aria-expanded="true">Product Images</a>
+                </li>
 
-                      <optgroup label="Engineering &amp; Design">
-                        <option value="5">Interaction Designer</option>
-                        <option value="6">Technical Program Manager</option>
-                        <option value="7">Software Engineer</option>
-                        <option value="8">Information Security Engineer</option>
-                      </optgroup>
+                </ul>
+                <div class="tab-content">
 
-                      <optgroup label="Marketing &amp; Communications">
-                        <option value="13">Media Outreach Manager</option>
-                        <option value="14">Research Manager</option>
-                        <option value="15">Marketing Intern</option>
-                        <option value="16">Business Intern</option>
-                      </optgroup>
+                     <div class="tab-pane active" id="1">
 
-                      <optgroup label="Sales Operations">
-                        <option value="17">Sales Operations Analyst</option>
-                        <option value="18">Technology Product Manager</option>
-                        <option value="19">Product Expert</option>
-                        <option value="20">Sales Insights Analyst</option>
-                        <option value="21">Customer Operations Analyst</option>
-                      </optgroup>
-                    </select>
-                  </div>
-                </div>
-              </div>
+                        <div class="col-md-12">
+                                <div class="form-group {{ $errors->first('product_title', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                    <label class="control-label col-md-2">Product Title<span class="required"> * </span></label>
+                                    <div class="col-md-6">
+                                        {!! Form::text('product_title',null, ['class' => 'form-control','data-required'=>1])  !!}
 
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Applicant name:</label>
-                    <input type="text" name="name" class="form-control" placeholder="John Doe">
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Email address:</label>
-                    <input type="email" name="email" class="form-control" placeholder="your@email.com">
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Phone #:</label>
-                    <input type="text" name="tel" class="form-control" placeholder="+99-99-9999-9999" data-mask="+99-99-9999-9999">
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <label>Date of birth:</label>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <select name="birth-month" data-placeholder="Month" class="select">
-                          <option></option>
-                          <option value="1">January</option>
-                          <option value="2">February</option>
-                          <option value="3">March</option>
-                          <option value="4">April</option>
-                          <option value="5">May</option>
-                          <option value="6">June</option>
-                          <option value="7">July</option>
-                          <option value="8">August</option>
-                          <option value="9">September</option>
-                          <option value="10">October</option>
-                          <option value="11">November</option>
-                          <option value="12">December</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <select name="birth-day" data-placeholder="Day" class="select">
-                          <option></option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                          <option value="6">6</option>
-                          <option value="7">7</option>
-                          <option value="8">8</option>
-                          <option value="9">9</option>
-                          <option value="...">...</option>
-                          <option value="31">31</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <select name="birth-year" data-placeholder="Year" class="select">
-                          <option></option>
-                          <option value="1">1980</option>
-                          <option value="2">1981</option>
-                          <option value="3">1982</option>
-                          <option value="4">1983</option>
-                          <option value="5">1984</option>
-                          <option value="6">1985</option>
-                          <option value="7">1986</option>
-                          <option value="8">1987</option>
-                          <option value="9">1988</option>
-                          <option value="10">1989</option>
-                          <option value="11">1990</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-
-            <h6>Your education</h6>
-            <fieldset>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>University:</label>
-                                    <input type="text" name="university" placeholder="University name" class="form-control">
-                                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Country:</label>
-                                      <select name="university-country" data-placeholder="Choose a Country..." class="select">
-                                          <option></option> 
-                                          <option value="1">United States</option> 
-                                          <option value="2">France</option> 
-                                          <option value="3">Germany</option> 
-                                          <option value="4">Spain</option> 
-                                      </select>
+                                        <span class="help-block" style="color:red">{{ $errors->first('product_title', ':message') }}</span>
                                     </div>
-                </div>
-              </div>
+                                </div>
+                            </div>
 
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Degree level:</label>
-                                    <input type="text" name="degree-level" placeholder="Bachelor, Master etc." class="form-control">
-                                  </div>
-
-                  <div class="form-group">
-                    <label>Specialization:</label>
-                                    <input type="text" name="specialization" placeholder="Design, Development etc." class="form-control">
-                                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label>From:</label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-from-month" data-placeholder="Month" class="select">
-                                                <option></option>
-                                                  <option value="January">January</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="December">December</option> 
-                                              </select>
-                                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-from-year" data-placeholder="Year" class="select">
-                                                  <option></option> 
-                                                  <option value="1995">1995</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="1980">1980</option> 
-                                              </select>
-                                            </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-                      <label>To:</label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-to-month" data-placeholder="Month" class="select">
-                                                <option></option>
-                                                  <option value="January">January</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="December">December</option> 
-                                              </select>
-                                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-to-year" data-placeholder="Year" class="select">
-                                                  <option></option> 
-                                                  <option value="1995">1995</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="1980">1980</option> 
-                                              </select>
-                                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Language of education:</label>
-                                    <input type="text" name="education-language" placeholder="English, German etc." class="form-control">
-                                  </div>
-                </div>
-              </div>
-            </fieldset>
-
-            <h6>Your experience</h6>
-            <fieldset>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Company:</label>
-                                    <input type="text" name="experience-company" placeholder="Company name" class="form-control">
-                                  </div>
-
-                  <div class="form-group">
-                    <label>Position:</label>
-                                    <input type="text" name="experience-position" placeholder="Company name" class="form-control">
-                                  </div>
-
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label>From:</label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-from-month" data-placeholder="Month" class="select">
-                                                <option></option>
-                                                  <option value="January">January</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="December">December</option> 
-                                              </select>
-                                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-from-year" data-placeholder="Year" class="select">
-                                                  <option></option> 
-                                                  <option value="1995">1995</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="1980">1980</option> 
-                                              </select>
-                                            </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-                      <label>To:</label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-to-month" data-placeholder="Month" class="select">
-                                                <option></option>
-                                                  <option value="January">January</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="December">December</option> 
-                                              </select>
-                                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                          <div class="form-group">
-                                              <select name="education-to-year" data-placeholder="Year" class="select">
-                                                  <option></option> 
-                                                  <option value="1995">1995</option> 
-                                                  <option value="...">...</option> 
-                                                  <option value="1980">1980</option> 
-                                              </select>
-                                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                                  <div class="form-group">
-                    <label>Brief description:</label>
-                                      <textarea name="experience-description" rows="4" cols="4" placeholder="Tasks and responsibilities" class="form-control"></textarea>
-                                  </div>
-
-                  <div class="form-group">
-                    <label class="display-block">Recommendations:</label>
-                                      <input name="recommendations" type="file" class="file-styled">
-                                      <span class="help-block">Accepted formats: pdf, doc. Max file size 2Mb</span>
-                                  </div>
-                </div>
-              </div>
-            </fieldset>
-
-            <h6>Additional info</h6>
-            <fieldset>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="display-block">Applicant resume:</label>
-                                      <input type="file" name="resume" class="file-styled">
-                                      <span class="help-block">Accepted formats: pdf, doc. Max file size 2Mb</span>
+                            <div class="col-md-12">
+                                <div class="form-group {{ $errors->first('product_category', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                    <label class="control-label col-md-2">Select Category <span class="required"> * </span></label>
+                                    <div class="col-md-6">
+                                        {!! $categories !!}
+                                        <span class="help-block" style="color:red">{{ $errors->first('product_category', ':message') }}</span>
                                     </div>
-                </div>
+                                </div>
+                            </div>
 
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Where did you find us?</label>
-                                      <select name="source" data-placeholder="Choose an option..." class="select-simple">
-                                          <option></option> 
-                                          <option value="monster">Monster.com</option> 
-                                          <option value="linkedin">LinkedIn</option> 
-                                          <option value="google">Google</option> 
-                                          <option value="adwords">Google AdWords</option> 
-                                          <option value="other">Other source</option>
-                                      </select>
+                            <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('price', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Product Price<span class="required"> * </span></label>
+                                        <div class="col-md-6">
+                                            {!! Form::text('price',null, ['class' => 'form-control','data-required'=>1])  !!}
+
+                                            <span class="help-block" style="color:red">{{ $errors->first('price', ':message') }}</span>
+                                        </div>
                                     </div>
-                </div>
-              </div>
+                            </div>
 
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Availability:</label>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="availability" class="styled">
-                        Immediately
-                      </label>
-                    </div>
-
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="availability" class="styled">
-                        1 - 2 weeks
-                      </label>
-                    </div>
-
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="availability" class="styled">
-                        3 - 4 weeks
-                      </label>
-                    </div>
-
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="availability" class="styled">
-                        More than 1 month
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Additional information:</label>
-                                      <textarea name="additional-info" rows="5" cols="5" placeholder="If you want to add any info, do it here." class="form-control"></textarea>
+                            <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('discount', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Product discount (%)<span class="required"> * </span></label>
+                                        <div class="col-md-6">
+                                                {!! Form::number('discount',0, ['class' => 'form-control form-cascade-control input-small','min'=>0])  !!}
+                                        <span class="help-block" style="color:red">{{ $errors->first('discount', ':message') }}</span>
+                                        </div>
                                     </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('unit', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Unit Description <span class="required"> * </span></label>
+                                        <div class="col-md-6">
+                                            {!! Form::text('unt',null, ['class' => 'form-control','data-required'=>1])  !!}
+
+                                            <span class="help-block" style="color:red">{{ $errors->first('unit', ':message') }} @if(session('field_errors')) {{ 'The Product title already been taken!' }} @endif</span>
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Description <span class="required"> * </span></label>
+                                        <div class="col-md-10">
+                                                {!! Form::textarea('description',null, ['class' => 'form-control ckeditor form-cascade-control input-small'])  !!}
+                                                <span class="help-block" style="color:red">{{ $errors->first('description', ':message') }}</span>
+                                                @if(Session::has('flash_alert_notice'))
+                                                <span class="label label-danger">
+
+                                                    {{ Session::get('flash_alert_notice') }}
+                                                </span>@endif
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('status', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Status</label>
+                                        <div class="col-md-6">
+                                                {!! Form::select('status',array('publish' => 'Publish', 'unpublish' => 'Unpublish'),null,['class' => 'form-control form-cascade-control'])  !!}
+                                        </div>
+                                    </div>
+                            </div>
+
+
+
                 </div>
-              </div>
-            </fieldset>
-          </form>
+                <div class="tab-pane" id="2">
+
+                                <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('meta_title', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Meta title</label>
+                                        <div class="col-md-6">
+                                                {!! Form::text('meta_title',null, ['class' => 'form-control form-cascade-control input-small'])  !!}
+                                                <span class="help-block" style="color:red">{{ $errors->first('meta_title', ':message') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group {{ $errors->first('meta_key', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                        <label class="control-label col-md-2">Meta Key</label>
+                                        <div class="col-md-6">
+                                                {!! Form::text('meta_key',null, ['class' => 'form-control form-cascade-control input-small'])  !!}
+                                                <span class="help-block" style="color:red">{{ $errors->first('meta_key', ':message') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                        &nbsp; &nbsp;
+                                        <div class="form-group {{ $errors->first('meta_description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                            <label class="control-label col-md-2">Meta Description</label>
+                                            <div class="col-md-10">
+                                                    {!! Form::textarea('meta_description',null, ['class' => 'form-control ckeditor form-cascade-control input-small'])  !!}
+                                                    <span class="help-block" style="color:red">{{ $errors->first('meta_description', ':message') }}</span>
+                                                    @if(Session::has('flash_alert_notice'))
+                                                    <span class="label label-danger">
+                                                        {{ Session::get('flash_alert_notice') }}
+                                                    </span>@endif
+                                            </div>
+                                        </div>
+                                </div>
+                        </div>
+
+
+                        <div class="tab-pane" id="3">
+
+                                <div class="col-md-12">
+                                        &nbsp;&nbsp;
+                                    <div class="form-group{{ $errors->first('image', ' has-error') }}">
+                                            <label class="col-lg-2 col-md-2 control-label">Default Product Image <span class="required"> * </span></label>
+                                            <div class="col-lg-6 col-md-6">
+
+                                                 {!! Form::file('image',null,['class' => 'form-control form-cascade-control input-small'])  !!}
+                                                 <br>
+                                                 @if(!empty($product->photo))
+                                                     <img src="{!! Url::to('storage/uploads/products/'.$product->photo) !!}" width="100px">
+                                                     <input type="hidden" name="photo" value="{!! $product->photo !!}">
+                                                 @endif
+                                                <span class="help-block" style="color:red">{{ $errors->first('image', ':message') }}</span>
+                                            </div>
+                                        </div>
+                                </div>
+
+                                {{-- <div class="col-md-12">
+                                    <div class="form-group">
+                                            <label class="col-lg-2 col-md-2 control-label">Product Image2</label>
+                                            <div class="col-lg-6 col-md-6">
+                                                    {!! Form::file('photo1',null,['class' => 'form-control form-cascade-control input-small'])  !!}
+                                                    <br>
+                                                    @if(!empty($product->photo))
+                                                        <img src="{!! Url::to('storage/uploads/products/'.$product->photo) !!}" width="100px">
+                                                        <input type="hidden" name="photo1" value="{!! $product->photo !!}">
+                                                    @endif
+                                            </div>
+                                        </div>
+                                </div> --}}
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                            <label class="col-lg-2 col-md-2 control-label">Product Images</label>
+                                            <div class="col-lg-6 col-md-6">
+                                                    <div class="input-group control-group increment" >
+
+                                                            {!! Form::file('images[]',null,['class' => 'form-control form-cascade-control input-small','accept'=>'image/*']) !!}
+                                                            <div class="input-group-btn"> 
+                                                                <button class="btn btn-success" type="button"><i class="glyphicon glyphicon-plus"></i>Add</button>
+                                                            </div>
+                                                    </div>
+                                                    <div class="clone hide">
+                                                        <div class="control-group input-group" style="margin-top:10px">
+                                                            {!! Form::file('images[]',null,['class' => 'form-control form-cascade-control input-small','accept'=>'image/*'])  !!}
+                                                            <div class="input-group-btn"> 
+                                                            <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                         </div>
+                </div>
+
+              &nbsp; &nbsp;
+             <div class="col-md-12">
+
+                <div class="form-group pull-right ">
+                {!! Form::submit(' Save ', ['class'=>'btn  btn-primary text-white','id'=>'saveBtn']) !!}
+
+                 <a href="{{route('product')}}">
+                    {!! Form::button('Back', ['class'=>'btn btn-warning text-white']) !!} </a>
+                </div>
+            </div>
+
+        </div>
+
+    </fieldset >

@@ -244,6 +244,51 @@ Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Module
                  ]
          );
 
+
+         /*------------ Product Type and controller---------*/
+
+        Route::bind('product-type', function ($value, $route) {
+            return Modules\Admin\Models\ProductType::find($value);
+        });
+
+        Route::resource(
+                'product-type',
+                'ProductTypeController',
+                [
+                    'names' => [
+                        'index'     => 'product-type',
+                        'create'    => 'product-type.create',
+                        'store'     => 'product-type.store',
+                        'destroy'   => 'product-type.destroy',
+                        'edit'      => 'product-type.edit',
+                        'update'    => 'product-type.update',
+                    ],
+                ]
+            );
+        /*---------End---------*/
+
+        /*------------ Product Type and controller---------*/
+
+        Route::bind('product-unit', function ($value, $route) {
+            return Modules\Admin\Models\ProductUnit::find($value);
+        });
+
+        Route::resource(
+                'product-unit',
+                'ProductUnitController',
+                [
+                    'names' => [
+                        'index'     => 'product-unit',
+                        'create'    => 'product-unit.create',
+                        'store'     => 'product-unit.store',
+                        'destroy'   => 'product-unit.destroy',
+                        'edit'      => 'product-unit.edit',
+                        'update'    => 'product-unit.update',
+                    ],
+                ]
+            );
+
+
          // product
 
         Route::bind('product', function ($value, $route) {
@@ -265,6 +310,8 @@ Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Module
                     ],
                 ]
             );
+        
+        /*---------End---------*/
         // wensite settings
 
         Route::bind('setting', function ($value, $route) {

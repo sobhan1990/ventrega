@@ -6,14 +6,20 @@ namespace Modules\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Product extends Eloquent
+
+class ProductUnit extends Eloquent
 {
+
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'products';
+    protected $casts = [
+        'created_at' => 'datetime:m-d-Y',
+    ];
+
+    protected $table = 'product_units';
     /**
      * The attributes that are mass assignable.
      *
@@ -31,11 +37,7 @@ class Product extends Eloquent
      *
      * @var array
      */
-
-    protected $fillable = ['product_title','slug','url','meta_key','meta_description','product_category',
-    'price','unit','qty','discount','description','photo','additional_images','video_url','product_type',
-    'validity','coupon_code','total_stocks','available_stocks','views','created_by','meta_title',
-    'rating','vendor_id','status','publish'];  // All field of user table here
+    protected $fillable = ['name','status'];  // All field of user table here
 
 
     /**
@@ -43,9 +45,4 @@ class Product extends Eloquent
      *
      * @var array
      */
-
-    public function category()
-    {
-        return $this->belongsTo('Modules\Admin\Models\Category','product_category','id');
-    }
 }
