@@ -21,7 +21,7 @@ use Session;
 /**
  * Class SingleUsersController
  */
-class AdminUserController extends Controller
+class AdminUserController  extends Controller
 {
     /**
      * @var  Repository
@@ -45,9 +45,9 @@ class AdminUserController extends Controller
         $this->createUrl    = 'admin::users.adminUser.create';
         $this->editUrl      = 'admin::users.adminUser.edit';
         $this->defaultUrl   = route('adminUser');
-        $this->createMessgae = 'Record created successfully.';
+        $this->createMessage = 'Record created successfully.';
         $this->updateMessage = 'Record updated successfully.';
-        $this->deleteMessgae =  'Record deleted successfully.';
+        $this->deleteMessage =  'Record deleted successfully.';
     }
 
     protected $users;
@@ -96,9 +96,9 @@ class AdminUserController extends Controller
                 if ($role_type) {
                     $query->Where('role_type', $role_type);
                 }
-            })->where('role_type', '=', 1)->Paginate($this->record_per_page);
+            })->where('role_type', '=', 3)->Paginate($this->record_per_page);
         } else {
-            $users = User::orderBy('id', 'desc')->where('role_type', '=', 1)->Paginate($this->record_per_page);
+            $users = User::orderBy('id', 'desc')->where('role_type', '=', 3)->Paginate($this->record_per_page);
         }
         $roles = config('role');
 
@@ -117,8 +117,8 @@ class AdminUserController extends Controller
         $page_title  =  str_replace(['.','create'],'', ucfirst(Route::currentRouteName()));
         $page_action =  str_replace('.',' ', ucfirst(Route::currentRouteName()));
 
-        $roles       = Roles::all();
-        $role_id     = null;
+        $roles       = config('role');
+        $role_id     = 1;
         $js_file     = ['common.js','bootbox.js','formValidate.js'];
 
         return view($this->createUrl, compact('js_file', 'role_id', 'roles', 'user', 'page_title', 'page_action'));
@@ -146,7 +146,7 @@ class AdminUserController extends Controller
         $js_file = ['common.js','bootbox.js','formValidate.js'];
 
         return Redirect::to($this->defaultUrl)
-            ->with('flash_alert_notice', $this->createMessgae);
+            ->with('flash_alert_notice', $this->createMessage);
     }
 
     /*
@@ -156,15 +156,15 @@ class AdminUserController extends Controller
      * */
 
     public function edit(User $user)
-    {
+    {   
         $page_title  =  str_replace(['.','edit'],'', ucfirst(Route::currentRouteName()));
         $page_action =  str_replace('.',' ', ucfirst(Route::currentRouteName()));
 
         $role_id     = $user->role_type;
-        $roles       = Roles::all();
+        $roles       = config('role');
         $js_file     = ['common.js','bootbox.js','formValidate.js'];
 
-        return view('admin::users.singleUser.edit', compact('js_file', 'role_id', 'roles', 'user', 'page_title', 'page_action'));
+        return view($this->editUrl, compact('js_file', 'role_id', 'roles', 'user', 'page_title', 'page_action'));
     }
 
     public function update(Request $request, User $user)
@@ -205,7 +205,7 @@ class AdminUserController extends Controller
         $user->save(); 
 
         return Redirect::to($this->defaultUrl)
-            ->with('flash_alert_notice', $this->updateMessgae);
+            ->with('flash_alert_notice', $this->updateMessage);
     }
     /*
      *Delete User
@@ -216,7 +216,7 @@ class AdminUserController extends Controller
     {
          $user->delete();
         return Redirect::to($this->defaultUrl)
-            ->with('flash_alert_notice', $this->deleteMessgae);
+            ->with('flash_alert_notice', $this->deleteMessage);
     }
 
     public function show(User $user)
