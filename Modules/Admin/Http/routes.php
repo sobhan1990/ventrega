@@ -1,5 +1,6 @@
 <?php
 
+
 Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Modules\Admin\Http\Controllers'], function()
 {
  
@@ -8,6 +9,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Module
      echo "<pre>";
       print_r($request->all());
    });
+
 
 
     // Login
