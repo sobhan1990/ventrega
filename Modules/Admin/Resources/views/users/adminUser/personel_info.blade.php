@@ -19,7 +19,7 @@
         <input type="password" placeholder="******" class="form-control" name="password"> 
     </div>
 
-     <input type="hidden" value="2" name="role_type">
+     <input type="hidden" value="{{$role_id}}" name="role_type">
     
       <div class="form-group {{ $errors->first('phone', ' has-error') }}">
         <label class="control-label">Mobile Number</label>

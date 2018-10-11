@@ -18,8 +18,7 @@
         "phpmailer/phpmailer": "^6.0",
         "spatie/image-optimizer": "^1.1",
         "spatie/laravel-menu": "^3.2",
-        "tymon/jwt-auth": "^0.5.12",
-        "xethron/migrations-generator": "^2.0"
+        "tymon/jwt-auth": "^0.5.12"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -27,7 +26,8 @@
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0",
+        "xethron/migrations-generator": "^2.0"
     },
     "autoload": {
         "classmap": [

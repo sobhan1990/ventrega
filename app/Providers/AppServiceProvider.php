@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Route;
 use View;
+use Modules\Admin\Models\Settings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,9 @@ class AppServiceProvider extends ServiceProvider
 
         View::share('menus', $this->menu());
         View::share('controllers', $module);
+        //  
+        $setting = $this->setting();
+        View::share('setting', $setting);
     }
 
     /**
@@ -97,5 +101,26 @@ class AppServiceProvider extends ServiceProvider
 
         return $mainMenu;
        
+    }
+
+    public function setting(){
+
+        $setting     = Settings::first();
+        $web_setting =  Settings::all();
+
+        if ($setting) {
+            $setting->id;
+        } else {
+            return Redirect::to(route('setting.create'));
+        }
+        foreach ($web_setting as $key => $value) {
+            $key_name           = $value->field_key;
+            $setting->$key_name = $value->field_value;
+        }
+
+        return $setting;
+
+        
+
     }
 }

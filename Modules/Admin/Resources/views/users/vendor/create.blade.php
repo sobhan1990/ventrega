@@ -23,7 +23,7 @@
 
                      <div class="panel-body">
                             <!-- BEGIN PROFILE SIDEBAR -->
-                            <div class="profile-sidebar">
+                            <div class="profile-sidebar col-md-2">
                                 <!-- PORTLET MAIN -->
                                 <div class="portlet light profile-sidebar-portlet bordered">
                                     <!-- SIDEBAR USERPIC -->
@@ -99,14 +99,14 @@
                             </div>
                             <!-- END BEGIN PROFILE SIDEBAR -->
                             <!-- BEGIN PROFILE CONTENT -->
-                            <div class="profile-content">
+                            <div class="profile-content col-md-10">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="portlet light bordered">
                                             <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject font-blue-madison bold uppercase"><b>User Account </b></span>
+                                                    <span class="caption-subject font-blue-madison bold uppercase"><b>Account Setup</b></span>
                                                 </div>
                                                 <ul class="nav nav-tabs">
                                                     <li class="active">
@@ -139,12 +139,12 @@
                                                     @endif
                                                 </div>
 
-                                             @include('admin::users.singleUser.personel_info', compact('user'))
+                                             @include('admin::users.vendor.personel_info', compact('user'))
 
 
                                             {!! Form::close() !!} 
                                             <!-- END PERSONAL INFO TAB --> 
-                                            @include('admin::users.singleUser.changeAvtar', compact('user'))
+                                            @include('admin::users.vendor.changeAvtar', compact('user'))
                                            
 
                                             <!-- END CHANGE AVATAR TAB -->

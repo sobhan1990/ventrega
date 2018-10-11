@@ -3,7 +3,7 @@
 
     <div class="navbar navbar-inverse bg-indigo">
     <div class="navbar-header" style="min-width: 225px !important">
-    <a class="navbar-brand" href="{{url('/')}}"><img style="height: 24px;" src="{{url('public/images/logo.png')}} " alt=""></a>
+    <a class="navbar-brand" href="{{url('/')}}"><img style="height: 24px;" src="{{url('storage/uploads/img/'.$setting->website_logo)}}" alt=""></a>
     <ul class="nav navbar-nav visible-xs-block">
     <li><a data-toggle="collapse" data-target="#navbar-mobile" class="legitRipple"><i class="icon-tree5"></i></a></li>
     <li><a class="sidebar-mobile-main-toggle legitRipple"><i class="icon-paragraph-justify3"></i></a></li>

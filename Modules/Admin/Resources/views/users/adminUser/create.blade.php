@@ -23,7 +23,7 @@
 
                      <div class="panel-body">
                             <!-- BEGIN PROFILE SIDEBAR -->
-                            <div class="profile-sidebar">
+                            <div class="profile-sidebar col-md-2">
                                 <!-- PORTLET MAIN -->
                                 <div class="portlet light profile-sidebar-portlet bordered">
                                     <!-- SIDEBAR USERPIC -->
@@ -99,7 +99,7 @@
                             </div>
                             <!-- END BEGIN PROFILE SIDEBAR -->
                             <!-- BEGIN PROFILE CONTENT -->
-                            <div class="profile-content">
+                            <div class="profile-content col-md-10">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="portlet light bordered">
@@ -142,11 +142,11 @@
                                              @include('admin::users.adminUser.personel_info', compact('user'))
 
 
-                                            {!! Form::close() !!} 
                                             <!-- END PERSONAL INFO TAB --> 
                                             @include('admin::users.adminUser.changeAvtar', compact('user'))
                                            
-
+                                             {!! Form::close() !!} 
+                                           
                                             <!-- END CHANGE AVATAR TAB -->
                                            
                                         </div>

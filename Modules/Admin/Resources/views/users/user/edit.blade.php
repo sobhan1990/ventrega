@@ -19,7 +19,7 @@
                   </div> 
             </div>
                      <div class="panel-body">
-                            <div class="profile-sidebar">
+                            <div class="profile-sidebar col-md-2">
                                 <!-- PORTLET MAIN -->
                                 <div class="portlet light profile-sidebar-portlet bordered">
                                     <!-- SIDEBAR USERPIC -->
@@ -91,7 +91,7 @@
                             </div>
                             <!-- END BEGIN PROFILE SIDEBAR -->
                             <!-- BEGIN PROFILE CONTENT -->
-                            <div class="profile-content">
+                            <div class="profile-content col-md-10">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="portlet light bordered">
