@@ -20,11 +20,11 @@
               <div class="panel-body">
                   <div class="table-toolbar">
                     <div class="row">
-                      <form action="" method="get" id="filter_data">
+                    <form action="{{route('product')}}" method="get" id="filter_data">
 
 
                       <div class="col-md-2">
-                          <input value="" placeholder="search by category" type="text" name="search" id="search" class="form-control" >
+                          <input value="" placeholder="search by product" type="text" name="search" id="search" class="form-control" >
                       </div>
                       <div class="col-md-2">
                           <input type="submit" value="Search" class="btn btn-primary form-control">
@@ -52,32 +52,36 @@
                         <tr>
                             <th> Sno. </th>
                             <th> Title </th>
-                            <th> Description </th>
+                            <th> Image </th>
+                            <th> Category </th>
                             <th> Price </th>
+                            <th> Diccount </th>
                             <th> Created date</th>
                             <th> Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {{-- @foreach($categories as $key => $result)
+                    @foreach($products as $key => $result)
                         <tr>
                             <td> {{++$key}} </td>
-                            <td> {{$result->category_name}} </td>
+                            <td> {{$result->product_title}} </td>
                             <td>
-                            <a href="{{ asset($result->category_image)  }}" target="_blank" >
-                            <img src="{{ asset($result->category_image)  }}" width="100px" height="50px;">
-                             </a>  </td>
-                              <td>
-                                {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}
-                          </td>
-
-                      <td>
-
-                            <a href="{{ route('category.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin-left: 20px">
+                                <a href="{{ url($result->photo)  }}" target="_blank" >
+                                    <img src="{{ url('storage/uploads/products/'.$result->photo)  }}" width="100px" height="50px;">
+                                </a>
+                            </td>
+                            <td>{{$result->product_category}}</td>
+                            <td> {{$result->price}} </td>
+                            <td> {{$result->discount}} </td>
+                            <td>
+                                    {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}
+                              </td>
+                           <td>
+                            <a href="{{ route('product.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin-left: 20px">
                             <i class="fa fa-edit" title="edit"></i> Edit
                             </a>
 
-                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'route' => array('category.destroy', $result->id))) !!}
+                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'route' => array('product.destroy', $result->id))) !!}
 
                             <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="fa fa-trash" title="Delete"></i> Delete
                             </button>
@@ -87,7 +91,7 @@
                                 </td>
 
                         </tr>
-                       @endforeach --}}
+                       @endforeach
 
                     </tbody>
                 </table>

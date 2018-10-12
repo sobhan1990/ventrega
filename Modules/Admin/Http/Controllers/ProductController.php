@@ -64,34 +64,34 @@ class ProductController extends Controller
     public function index(Product $product, Request $request)
     {
         $page_title  = 'Product';
+
         $page_action = 'View Product';
 
+        if ($request->ajax()) {
+            $id               = $request->get('id');
+            $product         = Product::find($id);
+            $product->status = $s;
+            $product->save();
+            echo $s;
 
-        // if ($request->ajax()) {
-        //     $id               = $request->get('id');
-        //     $product         = Product::find($id);
-        //     $category->status = $s;
-        //     $category->save();
-        //     echo $s;
+            exit();
+        }
 
-        //     exit();
-        // }
+        //Search by name ,email and group
+        $search = Input::get('search');
+        $status = Input::get('status');
 
-        // Search by name ,email and group
-        // $search = Input::get('search');
-        // $status = Input::get('status');
+        if ((isset($search) && !empty($search))) {
+            $search = isset($search) ? Input::get('search') : '';
 
-        // if ((isset($search) && !empty($search))) {
-        //     $search = isset($search) ? Input::get('search') : '';
-
-        //     $categories = Category::where(function ($query) use ($search,$status) {
-        //         if (!empty($search)) {
-        //             $query->Where('category_name', 'LIKE', "%$search%");
-        //         }
-        //     })->orderBy('id', 'DESC')->where('parent_id', 0)->Paginate($this->record_per_page);
-        // } else {
-        //     $categories = Category::orderBy('id', 'ASC')->where('parent_id', 0)->Paginate($this->record_per_page);
-        // }
+            $products = Product::where(function ($query) use ($search,$status) {
+                if (!empty($search)) {
+                    $query->Where('product_title', 'LIKE', "%$search%");
+                }
+            })->orderBy('id', 'ASC')->Paginate($this->record_per_page);
+        } else {
+            $products = Product::orderBy('id', 'ASC')->Paginate($this->record_per_page);
+        }
 
         $products = Product::all();
         return view('admin::product.index', compact('products', 'page_title', 'page_action'));
@@ -110,7 +110,7 @@ class ProductController extends Controller
 
         $productunits =  ProductUnit :: where('status', 1)->pluck('name', 'id');
 
-        $producttypes  =  ProductType :: where('status', 1)->pluck('name', 'id');
+        $producttypes =  ProductType :: where('status', 1)->pluck('name', 'id');
 
         return view('admin::product.create', compact('categories','product','page_title', 'page_action','productunits','producttypes'));
     }
@@ -128,12 +128,13 @@ class ProductController extends Controller
     {
 
         $cat_url    = $this->getCategoryById($request->get('product_category'));
+
         $pro_slug   = str_slug($request->get('product_title'));
+
         $url        = $cat_url.$pro_slug;
 
         if ($request->file('image')) {
 
-            //product image
             $photo = $request->file('image');
             $destinationPath = storage_path('uploads/products');
             $photo->move($destinationPath, time().$photo->getClientOriginalName());
@@ -141,19 +142,19 @@ class ProductController extends Controller
             $request->merge(['photo'=>$photo_name]);
 
 
-            //product multiple images
-            // if($request->hasfile('images'))
-            // {
-            //     foreach($request->file('images') as $image)
-            //     {
-            //         $image->move($destinationPath, time().$image->getClientOriginalName());
+            if($request->hasfile('images'))
+            {
+                foreach($request->file('images') as $image)
+                {
+                    $image->move($destinationPath, time().$image->getClientOriginalName());
 
-            //         $name =  time().$image->getClientOriginalName();
+                    $name =  time().$image->getClientOriginalName();
 
-            //         $images[] = $name;
-            //     }
-            //     $product->additional_images  =   $images;
-            // }
+                    $images[] = $name;
+                }
+
+                $product->additional_images  = json_encode($images);
+            }
 
             $product->product_title      =   $request->get('product_title');
             $product->slug               =   str_slug($request->get('product_title'));
@@ -165,6 +166,10 @@ class ProductController extends Controller
             $product->meta_key           =   $request->get('meta_key');
             $product->meta_description   =   $request->get('meta_description');
             $product->url                =   $url;
+            $product->unit               =   $request->get('unit');
+            $product->product_type       =   $request->get('type');
+            $product->total_stocks       =   $request->get('total_stocks');
+            $product->available_stocks   =   $request->get('available_stocks');
 
             $product->save();
 
@@ -173,6 +178,13 @@ class ProductController extends Controller
         return Redirect::to(route('product'))
                             ->with('flash_alert_notice', 'New Product was successfully created !');
 
+    }
+
+
+    public function destroy(Product $product) {
+        Product::where('id',$product->id)->delete();
+        return Redirect::to(route('product'))
+                        ->with('flash_alert_notice', 'Product was successfully deleted!');
     }
 }
 
