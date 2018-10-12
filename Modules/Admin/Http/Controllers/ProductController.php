@@ -13,6 +13,8 @@ use Input;
 use Modules\Admin\Http\Requests\ProductRequest;
 use Modules\Admin\Models\Product;
 use Modules\Admin\Models\Category;
+use Modules\Admin\Models\ProductType;
+use Modules\Admin\Models\ProductUnit;
 use Route;
 use URL;
 use View;
@@ -106,7 +108,11 @@ class ProductController extends Controller
                         ->selected([1])
                         ->renderAsDropdown();
 
-        return view('admin::product.create', compact('categories','product','page_title', 'page_action'));
+        $productunits =  ProductUnit :: where('status', 1)->pluck('name', 'id');
+
+        $producttypes  =  ProductType :: where('status', 1)->pluck('name', 'id');
+
+        return view('admin::product.create', compact('categories','product','page_title', 'page_action','productunits','producttypes'));
     }
 
 

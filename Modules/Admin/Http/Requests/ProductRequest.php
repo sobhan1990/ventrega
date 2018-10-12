@@ -27,8 +27,10 @@ class ProductRequest extends FormRequest
                             'description'       => 'required',
                             'price'             => 'required|numeric|min:0',
                             'discount'          => 'required|numeric|min:0',
+                            'available_stocks'  => 'numeric',
+                            'totla_stocks'      => 'numeric',
                             'image'             => 'required|mimes:jpeg,bmp,png,gif',
-                            'images.*'            => 'mimes:jpeg,bmp,png,gif'
+                            'images.*'          => 'mimes:jpeg,bmp,png,gif'
                         ];
                     }
                 case 'PUT':
@@ -40,6 +42,8 @@ class ProductRequest extends FormRequest
                             'description'       => 'required',
                             'price'             => 'required|numeric|min:0',
                             'discount'          => 'required|numeric|min:0',
+                            'available_stocks'  => 'numeric',
+                            'totla_stocks'      => 'numeric',
                             'image'             => 'mimes:jpeg,bmp,png,gif',
                             'images.*'          => 'mimes:jpeg,bmp,png,gif'
                         ];

@@ -31,7 +31,7 @@
                                         <span class="help-block" style="color:red">{{ $errors->first('product_title', ':message') }}</span>
                                     </div>
                                 </div>
-                            </div>
+                        </div>
 
                             <div class="col-md-12">
                                 <div class="form-group {{ $errors->first('product_category', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
@@ -64,16 +64,30 @@
                                     </div>
                             </div>
 
+
+                            <div class="col-md-12">
+                                <div class="form-group {{ $errors->first('product_type', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                    <label class="control-label col-md-2">Product Type <span class="required"> * </span></label>
+                                    <div class="col-md-6">
+                                        {!! Form::select('product_type',$producttypes, ['class' => 'form-control'])  !!}
+
+                                        <span class="help-block" style="color:red">{{ $errors->first('product_type', ':message') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-12">
                                     <div class="form-group {{ $errors->first('unit', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                         <label class="control-label col-md-2">Unit Description <span class="required"> * </span></label>
                                         <div class="col-md-6">
-                                            {!! Form::text('unt',null, ['class' => 'form-control','data-required'=>1])  !!}
+                                            {!! Form::select('unit',$productunits, ['class' => 'form-control'])  !!}
 
-                                            <span class="help-block" style="color:red">{{ $errors->first('unit', ':message') }} @if(session('field_errors')) {{ 'The Product title already been taken!' }} @endif</span>
+                                            <span class="help-block" style="color:red">{{ $errors->first('unit', ':message') }}</span>
                                         </div>
                                     </div>
                             </div>
+
+
 
                             <div class="col-md-12">
                                     <div class="form-group {{ $errors->first('description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
@@ -98,6 +112,32 @@
                                         </div>
                                     </div>
                             </div>
+
+
+
+                        <div class="col-md-12">
+                            <div class="form-group {{ $errors->first('total_stocks', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Total Stocks</label>
+                                <div class="col-md-6">
+                                    {!! Form::text('total_stocks',null, ['class' => 'form-control'])  !!}
+
+                                    <span class="help-block" style="color:red">{{ $errors->first('total_stocks', ':message') }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                         <div class="col-md-12">
+                            <div class="form-group {{ $errors->first('available_stocks', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Available Stocks</label>
+                                <div class="col-md-6">
+                                    {!! Form::text('available_stocks',null, ['class' => 'form-control'])  !!}
+
+                                    <span class="help-block" style="color:red">{{ $errors->first('available_stocks', ':message') }} </span>
+                                </div>
+                            </div>
+                        </div>
 
 
 
