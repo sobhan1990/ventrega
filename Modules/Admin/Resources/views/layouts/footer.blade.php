@@ -14,6 +14,10 @@
 
   <script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js')}}"></script>
 
+  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/media/fancybox.min.js')}}"></script>
+
+  <script type="text/javascript" src="{{ URL::asset('assets/js/pages/gallery.js')}}"></script>
+
 
 
   <!-- Theme JS files -->

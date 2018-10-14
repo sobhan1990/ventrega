@@ -49,12 +49,14 @@ class Product extends Eloquent
         return $this->belongsTo('Modules\Admin\Models\Category','product_category','id');
     }
 
-    public function product_unit()
+    //Prouct Unit
+    public function units()
     {
         return $this->belongsTo('Modules\Admin\Models\ProductUnit','unit','id');
     }
 
-    public function product_type()
+    //Product Type
+    public function types()
     {
         return $this->belongsTo('Modules\Admin\Models\ProductType','product_type','id');
     }

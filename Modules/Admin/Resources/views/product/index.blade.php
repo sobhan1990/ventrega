@@ -1,7 +1,9 @@
 @extends('admin::layouts.master')
 
     @section('content')
+
       @include('admin::partials.navigation')
+
       @include('admin::partials.breadcrumb')
 
        @include('admin::partials.sidebar')
@@ -16,23 +18,19 @@
                       </ul>
                     </div>
                   </div>
-  		        </div>
+                  </div>
+
               <div class="panel-body">
                   <div class="table-toolbar">
                     <div class="row">
                     <form action="{{route('product')}}" method="get" id="filter_data">
-
-
                       <div class="col-md-2">
                           <input value="" placeholder="search by product" type="text" name="search" id="search" class="form-control" >
                       </div>
                       <div class="col-md-2">
                           <input type="submit" value="Search" class="btn btn-primary form-control">
                       </div>
-
                     </form>
-
-
                     </div>
                 </div>
             </div>
@@ -56,6 +54,7 @@
                             <th> Category </th>
                             <th> Price </th>
                             <th> Diccount </th>
+                            <th>Status</th>
                             <th> Created date</th>
                             <th> Action</th>
                         </tr>
@@ -66,16 +65,21 @@
                             <td> {{++$key}} </td>
                             <td> {{$result->product_title}} </td>
                             <td>
-                                <a href="{{ url($result->photo)  }}" target="_blank" >
+                                <a href="{{ url('storage/uploads/products/'.$result->photo)  }}" target="_blank" data-popup="lightbox">
                                     <img src="{{ url('storage/uploads/products/'.$result->photo)  }}" width="100px" height="50px;">
                                 </a>
                             </td>
-                            <td>{{$result->product_category}}</td>
-                            <td> {{$result->price}} </td>
-                            <td> {{$result->discount}} </td>
+                            <td>{{$result->category['category_name']}}</td>
+                            <td>{{$result->price}} </td>
+                            <td>{{$result->discount}} </td>
+                            <td>
+                                <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'product')" >
+                                    {{ ($result->status==1)?'Active':'Inactive'}}
+                                </span>
+                            </td>
                             <td>
                                     {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}
-                              </td>
+                            </td>
                            <td>
                             <a href="{{ route('product.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin-left: 20px">
                             <i class="fa fa-edit" title="edit"></i> Edit
@@ -94,10 +98,17 @@
                        @endforeach
 
                     </tbody>
+
                 </table>
-                 <div class="center" align="center">  </div>
+
+                Showing {{($products->currentpage()-1)*$products->perpage()+1}} to {{$products->currentpage()*$products->perpage()}}
+                of  {{$products->total()}} entries
+
+                 <div class="center" align="center">  {!! $products->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+
                 </div>
 
                 </div>
+
               </div>
    @stop
