@@ -105,14 +105,14 @@
                             </div>
                     </div>
 
-                    <div class="col-md-12">
+                    {{-- <div class="col-md-12">
                             <div class="form-group {{ $errors->first('status', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Status</label>
                                 <div class="col-md-6">
                                         {!! Form::select('status',array('publish' => 'Publish', 'unpublish' => 'Unpublish'),null,['class' => 'form-control form-cascade-control'])  !!}
                                 </div>
                             </div>
-                    </div>
+                    </div> --}}
 
 
                 <div class="clearfix">&nbsp;</div>

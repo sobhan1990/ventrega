@@ -54,10 +54,11 @@
                             <th> Category </th>
                             <th> Price </th>
                             <th> Diccount </th>
-                            <th>Status</th>
+                            <th> Status</th>
                             <th> Created date</th>
                             <th> Action</th>
                         </tr>
+
                     </thead>
                     <tbody>
                     @foreach($products as $key => $result)
@@ -69,7 +70,8 @@
                                     <img src="{{ url('storage/uploads/products/'.$result->photo)  }}" width="100px" height="50px;">
                                 </a>
                             </td>
-                            <td>{{$result->category['category_name']}}</td>
+
+                            <td>{{$result->category->category_name}}</td>
                             <td>{{$result->price}} </td>
                             <td>{{$result->discount}} </td>
                             <td>

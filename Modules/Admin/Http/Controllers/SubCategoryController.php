@@ -26,13 +26,13 @@ use DB;
 use Route;
 use Crypt;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Dispatcher; 
+use Illuminate\Http\Dispatcher;
 use App\Helpers\Helper;
 
 /**
  * Class AdminController
  */
-class SubCategoryController extends Controller { 
+class SubCategoryController extends Controller {
 
     /**
      * @var  Repository
@@ -59,14 +59,14 @@ class SubCategoryController extends Controller {
      * Dashboard
      * */
 
-    public function index(Category $category, Request $request) 
-    { 
+    public function index(Category $category, Request $request)
+    {
         $page_title = 'Category';
         $sub_page_title = 'Sub Category';
-        $page_action = 'View Sub Category'; 
+        $page_action = 'View Sub Category';
         if ($request->ajax()) {
-            $id = $request->get('id'); 
-            $category = Category::find($id); 
+            $id = $request->get('id');
+            $category = Category::find($id);
             $category->status = $s;
             $category->save();
             echo $s;
@@ -79,19 +79,19 @@ class SubCategoryController extends Controller {
         if ((isset($search) && !empty($search))) {
 
             $search = isset($search) ? Input::get('search') : '';
-               
+
             $categories = Category::with('parentCategory')->where(function($query) use($search,$status) {
                         if (!empty($search)) {
                             $query->Where('sub_category_name', 'LIKE', "%$search%")
                                     ->OrWhere('category_name', 'LIKE', "%$search%");
                         }
-                        
+
                     })->where('parent_id','!=',0)->Paginate($this->record_per_page);
         } else {
             $categories = Category::with('parentCategory')->where('parent_id','!=',0)->Paginate($this->record_per_page);
         }
 
-         
+
         return view('admin::sub_category.index', compact('sub_page_title','result_set','categories','data', 'page_title', 'page_action','html'));
     }
 
@@ -99,14 +99,14 @@ class SubCategoryController extends Controller {
      * create Group method
      * */
 
-    public function create(Category $category) 
+    public function create(Category $category)
     {
 
         $sub_categories = Category::attr(['name' => 'category_name','class'=>'select-search'])
-                        ->renderAsDropdown();  
+                        ->renderAsDropdown();
 
         $page_title = 'Sub Category';
-        $page_action = 'Create Sub Category'; 
+        $page_action = 'Create Sub Category';
         $categories = Category::where('parent_id',0)->get();
 
         return view('admin::sub_category.create', compact('sub_categories','categories', 'html','category', 'page_title', 'page_action'))->withInput(Input::all());
@@ -116,11 +116,11 @@ class SubCategoryController extends Controller {
      * Save Sub category
      * */
 
-    public function store(SubCategoryRequest $request, Category $category) 
-    {  
-          
+    public function store(SubCategoryRequest $request, Category $category)
+    {
+
         $main_category = Category::find($request->get('category_name'));
-       
+
         $parent_id = $request->get('category_name');
 
         $category->url  =  'category/' . strtolower(str_slug($request->get('category_name')));
@@ -130,45 +130,46 @@ class SubCategoryController extends Controller {
             $category_image = Category::createImage($request, 'sub_category_image');
             $request->merge(['sub_category_image' => $category_image]);
             $category->sub_category_image = $request->get('sub_category_image');
-        } 
+        }
 
         $category->parent_id      =  $request->get('category_name');
-        $category->category_name  =  $main_category->category_name;
+        //$category->category_name  =  $main_category->category_name;
+        $category->category_name  =  $request->get('sub_category_name');
         $category->sub_category_name  =  $request->get('sub_category_name');
         $category->category_image =  $main_category->category_image;
         $category->level          =  $main_category->level+1;
         $category->description    =  $request->get('description');
 
          $category->save();
-         
+
         return Redirect::to(route('sub-category'))
                             ->with('flash_alert_notice', 'New Sub category  successfully created.');
         }
 
     /*
      * Edit Group method
-     * @param 
+     * @param
      * object : $category
      * */
 
     public function edit(Category $category) {
 
-        $page_title = 'Category';  
-        $page_action = 'Edit Sub category';  
+        $page_title = 'Category';
+        $page_action = 'Edit Sub category';
         $categories = Category::where('parent_id',0)->get();
         $url = url($category->sub_category_image) ;
 
         $sub_categories = Category::attr(['name' => 'category_name','class'=>'select-search'])
                         ->selected($category->id)
-                        ->renderAsDropdown();  
-         
+                        ->renderAsDropdown();
+
         return view('admin::sub_category.edit', compact('sub_categories','categories','url','category', 'page_title', 'page_action'));
     }
 
     public function update(Request $request, $category) {
-       
+
         $main_category = Category::find($request->get('category_name'));
-       
+
         $parent_id = $request->get('category_name');
 
         $category->url  =  'category/' . strtolower(str_slug($request->get('category_name')));
@@ -178,10 +179,11 @@ class SubCategoryController extends Controller {
             $category_image = Category::createImage($request, 'sub_category_image');
             $request->merge(['sub_category_image' => $category_image]);
             $category->sub_category_image = $request->get('sub_category_image');
-        } 
+        }
 
         $category->parent_id      =  $request->get('category_name');
-        $category->category_name  =  $main_category->category_name;
+        //$category->category_name  =  $main_category->category_name;
+        $category->category_name  =  $request->get('sub_category_name');
         $category->sub_category_name  =  $request->get('sub_category_name');
         $category->category_image =  $main_category->category_image;
         $category->level          =  $main_category->level+1;
@@ -193,19 +195,19 @@ class SubCategoryController extends Controller {
                         ->with('flash_alert_notice', 'Sub Category   successfully updated.');
     }
     /*
-     *Delete 
+     *Delete
      * @param
-     * 
+     *
      */
     public function destroy(Category $category) {
-        
-        $category->delete(); 
+
+        $category->delete();
         return Redirect::to(URL::previous())
                         ->with('flash_alert_notice', 'Sub Category  successfully deleted.');
     }
 
     public function show(Category $category) {
-        
+
         $result = $category;
         $page_title  = 'Category';
         $page_action  = 'Show Category';
