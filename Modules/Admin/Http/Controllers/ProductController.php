@@ -86,15 +86,15 @@ class ProductController extends Controller
         if ((isset($search) && !empty($search))) {
             $search = isset($search) ? Input::get('search') : '';
 
-            $products = Product::where(function ($query) use ($search) {
+            $products = Product::with('category')->where(function ($query) use ($search) {
                 if (!empty($search)) {
                     $query->Where('product_title', 'LIKE', "%$search%");
                 }
             })->orderBy('id', 'ASC')->Paginate($this->record_per_page);
         } else {
-            $products = Product::orderBy('id', 'ASC')->Paginate($this->record_per_page);
+            $products = Product::with('category')->orderBy('id', 'ASC')->Paginate($this->record_per_page);
         }
-
+        
         return view('admin::product.index', compact('products', 'page_title', 'page_action'));
     }
 

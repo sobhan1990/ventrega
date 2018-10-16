@@ -178,7 +178,7 @@ Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Module
 
 
         Route::bind('vendor', function ($value, $route) {
-            return Modules\Admin\Models\User::find($value);
+            return Modules\Admin\Models\Vendor::find($value);
         });
 
         Route::resource(

@@ -71,7 +71,7 @@
                                 </a>
                             </td>
 
-                            <td>{{$result->category->category_name}}</td>
+                            <td>{{$result->category->category_name??null}}</td>
                             <td>{{$result->price}} </td>
                             <td>{{$result->discount}} </td>
                             <td>

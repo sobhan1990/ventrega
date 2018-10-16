@@ -64,11 +64,11 @@ $(function() {
     $(".steps-state-saving").steps({
         headerTag: "h6",
         bodyTag: "fieldset",
-        saveState: true,
+        saveState: false,
         titleTemplate: '<span class="number">#index#</span> #title#',
-        autoFocus: true,
+        autoFocus: false,
         onFinished: function (event, currentIndex) {
-            alert("Form submitted.");
+            $('#steps_form').submit();
         }
     });
 
