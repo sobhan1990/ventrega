@@ -276,10 +276,12 @@ class ProductController extends Controller
                 }
 
                 $add_img = $request->get('add_img');
-
+                if($add_img != ''){
                 $all_images =  array_merge($add_img,$images);
-
                 $product->additional_images  = json_encode($all_images);
+                }else{
+                    $product->additional_images  = json_encode($images); 
+                }
             }
 
 
@@ -331,9 +333,16 @@ class ProductController extends Controller
 
                 $add_img = $request->get('add_img');
 
-                $all_images =  array_merge($add_img,$images);
 
-                $product->additional_images  = json_encode($all_images);
+                if($add_img != ''){
+
+                    $all_images =  array_merge($add_img,$images);
+
+                    $product->additional_images  = json_encode($all_images);
+
+                }else{
+                        $product->additional_images  = json_encode($images);   
+                    }
             }
 
             $product->product_title      =   $request->get('product_title');
