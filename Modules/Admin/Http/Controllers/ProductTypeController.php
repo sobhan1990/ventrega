@@ -33,7 +33,7 @@ class ProductTypeController extends Controller
     public function __construct()
     {
         $this->middleware('admin');
-        View::share('viewPage', 'ProductType');
+        View::share('viewPage', 'Product');
         View::share('helper', new Helper);
         View::share('heading', 'Product Type');
         View::share('route_url', route('product-type'));

@@ -32,7 +32,7 @@ class RoleController extends Controller
     public function __construct()
     { 
          
-        View::share('viewPage', 'role'); 
+        View::share('viewPage', 'Users'); 
         View::share('route_url', route('role'));
         View::share('heading', 'Role');
 

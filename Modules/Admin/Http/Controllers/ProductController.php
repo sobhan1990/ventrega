@@ -52,9 +52,14 @@ class ProductController extends Controller
         View::share('viewPage', 'Product');
         View::share('helper', new Helper);
         View::share('heading', 'Products');
-        View::share('route_url', route('product'));
-
+        View::share('route_url', route('product')); 
         $this->record_per_page = Config::get('app.record_per_page');
+
+        $submenu = [
+                route('product.create')=>'Create Product',
+                route('product')=>'View Products',
+            ];
+        View::share('submenu',   $submenu); 
     }
 
 

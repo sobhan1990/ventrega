@@ -35,7 +35,7 @@ class VendorController extends Controller
     public function __construct()
     {
         $this->middleware('admin');
-        View::share('viewPage', 'Vendors');
+        View::share('viewPage', 'Vendor');
         View::share('helper', new Helper);
         View::share('heading', 'Vendors');
         View::share('route_url', route('vendor'));

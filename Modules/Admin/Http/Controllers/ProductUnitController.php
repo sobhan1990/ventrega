@@ -4,26 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Http\Controllers;
 
-use App\Helpers\Helper;
-
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\Config;
-
-use Illuminate\Support\Facades\Redirect;
-
-use Input;
-
-use Modules\Admin\Http\Requests\ProductUnitRequest;
-
-use Modules\Admin\Models\ProductUnit;
-
-use Route;
-
-use URL;
-
+use App\Helpers\Helper; 
+use App\Http\Controllers\Controller; 
+use Illuminate\Http\Request; 
+use Illuminate\Support\Facades\Config; 
+use Illuminate\Support\Facades\Redirect; 
+use Input; 
+use Modules\Admin\Http\Requests\ProductUnitRequest; 
+use Modules\Admin\Models\ProductUnit; 
+use Route; 
+use URL; 
 use View;
 
 /**
@@ -44,7 +34,7 @@ class ProductUnitController extends Controller
     {
         $this->middleware('admin');
 
-        View::share('viewPage', 'ProductUnit');
+        View::share('viewPage', 'Product');
 
         View::share('helper', new Helper);
 

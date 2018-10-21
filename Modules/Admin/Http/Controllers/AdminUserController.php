@@ -35,7 +35,7 @@ class AdminUserController  extends Controller
     public function __construct()
     {
         $this->middleware('admin');
-        View::share('viewPage', 'Admin User');
+        View::share('viewPage', 'Users');
         View::share('helper', new Helper);
         View::share('heading', 'Admin User');
         View::share('route_url', route('adminUser'));
@@ -96,9 +96,9 @@ class AdminUserController  extends Controller
                 if ($role_type) {
                     $query->Where('role_type', $role_type);
                 }
-            })->where('role_type', '=', 3)->Paginate($this->record_per_page);
+            })->where('role_type', '=', 1)->Paginate($this->record_per_page);
         } else {
-            $users = User::orderBy('id', 'desc')->where('role_type', '=', 3)->Paginate($this->record_per_page);
+            $users = User::orderBy('id', 'desc')->where('role_type', '=', 1)->Paginate($this->record_per_page);
         }
         $roles = config('role');
 
