@@ -107,7 +107,7 @@
                             <div class="form-group {{ $errors->first('discount', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Product discount<span class="required"> * </span></label>
                                 <div class="col-md-6">
-                                        {!! Form::text('discount',null, ['class' => 'form-control form-cascade-control input-small','min'=>0,'id'=>'discount','minlength'=>1])  !!}
+                                        {!! Form::text('discount',null, ['class' => 'form-control form-cascade-control input-small','min'=>0, 'id'=>'discount'])  !!}
                                 <span class="help-block" style="color:red">{{ $errors->first('discount', ':message') }}</span>
                                 </div>
                             </div>

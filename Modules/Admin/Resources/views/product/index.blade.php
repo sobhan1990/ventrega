@@ -58,8 +58,11 @@
                             <th> Product Title </th>
                             <th> Image </th>
                             <th> Category </th>
-                            <th> Price </th>
-                            <th> Diccount </th>
+                            <th> Stock Price </th> 
+                            <th> MRP </th>
+                            <th> Discount </th>
+                             <th> Discount Type </th>
+                            <th> Discount Price </th>
                             <th> Status</th>
                             <th> Created date</th>
                             <th> Action</th>
@@ -87,7 +90,7 @@
                           <td>     
                           <input type="checkbox" name="checkAll" id="chk_{{$result->id}}" value="{{$result->id}}" >  
                                     
-                                     </td>
+                           </td>
                             <td> {{++$key}} </td>
                             <td> {{$result->product_title}} </td>
                             <td>
@@ -97,8 +100,11 @@
                             </td>
 
                             <td>{{$result->category->category_name??null}}</td>
-                            <td>{{$result->price}} </td>
-                            <td>{{$result->discount}} </td>
+                            <td>{{ money_format("%.2n", (float)$result->store_price)}} INR</td> 
+                            <td>{{ money_format("%.2n", (float)$result->price)}} INR</td>
+                            <td>{{ money_format("%.2n", (float)$result->discount)}} INR</td>
+                            <td>{{ money_format("%.2n", (float)$result->discount_type)}} INR</td>
+                            <td>{{ money_format("%.2n", (float)$result->discount_price)}} INR</td>
                             <td>
                                 <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'product')" >
                                     {{ ($result->status==1)?'Active':'Inactive'}}

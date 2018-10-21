@@ -45,6 +45,8 @@ $(function(){
             var discount = $('#discount').val();
             discount = (store_price*discount)/100;
         } 
+         
+
         var mrp = parseFloat(store_price)-discount;
         $('#discount_price').val(mrp.toFixed(2));
     });
@@ -61,6 +63,12 @@ $(function(){
             var discount = $('#discount').val();
             discount = (store_price*discount)/100;
         } 
+
+        if(parseInt(store_price)<parseInt(discount)){
+            bootbox.alert('Discount should not be greater than store price');
+            $('#discount').val('0');
+            return false;
+        }
 
         var mrp = parseFloat(store_price)-discount;
         $('#discount_price').val(mrp.toFixed(2));
@@ -80,10 +88,16 @@ function updateDiscount(){
         var discount = $('#discount').val();
         discount = (store_price*discount)/100;
     } 
+
+      if(parseInt(store_price)<parseInt(discount)){
+        bootbox.alert('Discount should not be greater than store price');
+        $('#discount').val('0');
+        return false;
+    }
+
     var mrp = parseFloat(store_price)-discount;
     $('#discount_price').val(mrp.toFixed(2));
 }
-
 
 function popupAlert(url,id){
     bootbox.confirm({
