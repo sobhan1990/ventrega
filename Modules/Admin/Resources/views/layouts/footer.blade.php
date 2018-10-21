@@ -84,4 +84,11 @@
   <script type="text/javascript" src="{{ URL::asset('assets/js/pages/uploader_bootstrap.js')}}"></script>
  
 
+
+  <script type="text/javascript" src="{{ URL::asset('assets/js/pages/form_tags_input.js')}}"></script>
+  
+  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/tags/tokenfield.min.js')}}"></script>
+
+
+
 </html>

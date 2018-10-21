@@ -48,8 +48,14 @@
                 <table class="table table-striped table-hover table-bordered" id="">
                     <thead>
                         <tr>
-                            <th> Sno. </th>
-                            <th> Title </th>
+                          <th><div class="mt-checkbox-list">
+                                    <label class="mt-checkbox mt-checkbox-outline">
+                                        <input type="checkbox" onclick="checkAll(this)" > 
+                                        <span></span>
+                                    </label>
+                                    </div></th>
+                            <th> #Sno. </th>
+                            <th> Product Title </th>
                             <th> Image </th>
                             <th> Category </th>
                             <th> Price </th>
@@ -58,16 +64,35 @@
                             <th> Created date</th>
                             <th> Action</th>
                         </tr>
-
+                         @if(count($products )==0)
+                            <tr>
+                                <td colspan="8">
+                                    <div class="alert alert-danger alert-dismissable">
+                                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                        <i class="icon fa fa-check"></i>  
+                                        {{ 'Record not found. !' }}
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
                     </thead>
                     <tbody>
                     @foreach($products as $key => $result)
+                      @if(!$result->photo)
+                       <?php $url = '#' ?>
+                        @else
+                       <?php $url = url($result->photo); ?>
+                      @endif
                         <tr>
+                          <td>     
+                          <input type="checkbox" name="checkAll" id="chk_{{$result->id}}" value="{{$result->id}}" >  
+                                    
+                                     </td>
                             <td> {{++$key}} </td>
                             <td> {{$result->product_title}} </td>
                             <td>
-                                <a href="{{ url('storage/uploads/products/'.$result->photo)  }}" target="_blank" data-popup="lightbox">
-                                    <img src="{{ url('storage/uploads/products/'.$result->photo)  }}" width="100px" height="50px;">
+                                <a href="{{ $url??'#' }}" target="_blank" data-popup="lightbox">
+                                    <img src="{!! $url  !!}" width="100px" height="50px;">
                                 </a>
                             </td>
 
@@ -101,16 +126,24 @@
 
                     </tbody>
 
-                </table>
-
-                Showing {{($products->currentpage()-1)*$products->perpage()+1}} to {{$products->currentpage()*$products->perpage()}}
-                of  {{$products->total()}} entries
-
-                 <div class="center" align="center">  {!! $products->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
-
+                </table> 
+                <p style="margin: 10px">
+                 Showing {{($products->currentpage()-1)*$products->perpage()+1}} to {{$products->currentpage()*$products->perpage()}}
+                of  {{$products->total()}} entries  </p>
+                </div> 
                 </div>
 
-                </div>
+                <div class="col-md-12">  
+                   <div class="col-md-5">
+                   @if($products->count())
+                      <span id="error_msg"></span>
+                      <button class="btn btn-danger" onclick="deleteAll('{{url('admin')}}','products')">Delete Selected Item</button>
+                   @endif
+                 </div>
+                 <div class="col-md-6">
+                    <div class="center" align="left">  {!! $products->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+                </div> 
 
+              </div>
               </div>
    @stop

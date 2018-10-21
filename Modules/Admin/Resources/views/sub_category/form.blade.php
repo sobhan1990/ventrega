@@ -26,6 +26,8 @@
                 </div> 
                 
         </div>
+
+         
             
         <div class="col-md-12">
                 <div class="form-group  {{ $errors->first('sub_category_image', ' has-error') }}">

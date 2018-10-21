@@ -80,7 +80,7 @@ class SubCategoryController extends Controller {
 
             $search = isset($search) ? Input::get('search') : '';
 
-            $categories = Category::with('parentCategory')->where(function($query) use($search,$status) {
+            $categories = Category::with('parentCategory','products')->where(function($query) use($search,$status) {
                         if (!empty($search)) {
                             $query->Where('sub_category_name', 'LIKE', "%$search%")
                                     ->OrWhere('category_name', 'LIKE', "%$search%");
@@ -88,9 +88,10 @@ class SubCategoryController extends Controller {
 
                     })->where('parent_id','!=',0)->Paginate($this->record_per_page);
         } else {
-            $categories = Category::with('parentCategory')->where('parent_id','!=',0)->Paginate($this->record_per_page);
+            $categories = Category::with('parentCategory','products')->where('parent_id','!=',0)
+            ->Paginate($this->record_per_page);
         }
-
+ 
 
         return view('admin::sub_category.index', compact('sub_page_title','result_set','categories','data', 'page_title', 'page_action','html'));
     }
@@ -139,8 +140,8 @@ class SubCategoryController extends Controller {
         $category->category_image =  $main_category->category_image;
         $category->level          =  $main_category->level+1;
         $category->description    =  $request->get('description');
-
-         $category->save();
+        $category->commission    =  $main_category->commission;
+        $category->save();
 
         return Redirect::to(route('sub-category'))
                             ->with('flash_alert_notice', 'New Sub category  successfully created.');
@@ -181,13 +182,13 @@ class SubCategoryController extends Controller {
             $category->sub_category_image = $request->get('sub_category_image');
         }
 
-        $category->parent_id      =  $request->get('category_name');
-        //$category->category_name  =  $main_category->category_name;
-        $category->category_name  =  $request->get('sub_category_name');
+        $category->parent_id        =  $request->get('category_name');
+        $category->category_name    =  $request->get('sub_category_name');
         $category->sub_category_name  =  $request->get('sub_category_name');
-        $category->category_image =  $main_category->category_image;
-        $category->level          =  $main_category->level+1;
-        $category->description    =  $request->get('description');
+        $category->category_image   =  $main_category->category_image;
+        $category->level            =  $main_category->level+1;
+        $category->description      =  $request->get('description');
+        $category->commission       =  $main_category->commission;
 
         $category->save();
 

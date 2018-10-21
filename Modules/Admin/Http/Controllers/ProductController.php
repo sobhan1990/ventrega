@@ -15,6 +15,7 @@ use Modules\Admin\Models\Product;
 use Modules\Admin\Models\Category;
 use Modules\Admin\Models\ProductType;
 use Modules\Admin\Models\ProductUnit;
+use Modules\Admin\Models\Vendor; 
 use Route;
 use URL;
 use View;
@@ -79,22 +80,34 @@ class ProductController extends Controller
         }
 
         //Search by name ,email and group
-        $search = Input::get('search');
+        $search =  (Input::get('search'));
+        $category_id =  (Input::get('category_id'));
 
-        //$status = Input::get('status');
-
+        //$status = Input::get('status'); 
+        
         if ((isset($search) && !empty($search))) {
-            $search = isset($search) ? Input::get('search') : '';
-
-            $products = Product::with('category')->where(function ($query) use ($search) {
+            $categoryArray = Category::where('category_name', 'LIKE', "%$search%")->pluck('id');
+            $products = Product::with('category')->where(function ($query) use ($search,$categoryArray,$category_id) {
                 if (!empty($search)) {
                     $query->Where('product_title', 'LIKE', "%$search%");
                 }
-            })->orderBy('id', 'ASC')->Paginate($this->record_per_page);
-        } else {
-            $products = Product::with('category')->orderBy('id', 'ASC')->Paginate($this->record_per_page);
+                if (!empty($categoryArray)) {
+                    $query->orWhereIn('product_category', $categoryArray);
+                }
+                if ($category_id) {
+                    $query->orWhere('product_category', $category_id);
+                }
+            })->orderBy('id', 'desc')->Paginate($this->record_per_page);
+        } else {  
+            $products = Product::with('category')->orderBy('id', 'desc')->where(function($query) use($category_id){
+               if ($category_id) {
+
+                    $query->where('product_category', $category_id);
+                }
+            })->Paginate($this->record_per_page);
         }
-        
+             
+
         return view('admin::product.index', compact('products', 'page_title', 'page_action'));
     }
 
@@ -105,99 +118,91 @@ class ProductController extends Controller
 
         $page_action = 'Add Product';
 
-        $categories = Category::attr(['name' => 'product_category','class'=>'form-control form-cascade-control input-small'])
+        $categories = Category::attr(['name' => 'product_category','class'=>'form-control form-cascade-control input-small','id'=>'product_category','placeholder'=>'select category'])
                         ->selected([1])
                         ->renderAsDropdown();
 
-        $productunits =  ProductUnit :: where('status', 1)->pluck('name', 'id');
+        $category = Category::all();
+        $productunits =  ProductUnit::where('status', 1)->pluck('name', 'id');
 
-        $producttypes =  ProductType :: where('status', 1)->pluck('name', 'id');
+        $producttypes =  ProductType::where('status', 1)->pluck('name', 'id');
 
-        return view('admin::product.create', compact('categories','product','page_title', 'page_action','productunits','producttypes'));
+        return view('admin::product.create', compact('categories','product','page_title', 'page_action','productunits','producttypes','category'));
     }
 
 
      public function getCategoryById($id){
 
         $url =  Category::where('id',$id)->first();
-
         return  $url->slug.'/';
     }
 
 
-    public function store(ProductRequest $request, Product $product)
+    public function store(Request $request, Product $product)
     {
-
+         
         $cat_url    = $this->getCategoryById($request->get('product_category'));
-
         $pro_slug   = str_slug($request->get('product_title'));
-
         $url        = $cat_url.$pro_slug;
 
+        $request->validate([  
+            'product_title' => 'required',
+            'store_price' => 'required',
+            'product_category' => 'required',
+            'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
+        ]); 
+
         if ($request->file('image')) {
-
-            $photo = $request->file('image');
-
             $destinationPath = storage_path('uploads/products');
-
-            $photo->move($destinationPath, time().$photo->getClientOriginalName());
-
-            $photo_name = time().$photo->getClientOriginalName();
-
-            $request->merge(['photo'=>$photo_name]);
-
-
             if($request->hasfile('images'))
             {
                 foreach($request->file('images') as $image)
                 {
                     $image->move($destinationPath, time().$image->getClientOriginalName());
-
                     $name =  time().$image->getClientOriginalName();
-
                     $images[] = $name;
                 }
-
                 $product->additional_images  = json_encode($images);
             }
+        }    
 
-            $product->product_title      =   $request->get('product_title');
+        try {
+            \DB::beginTransaction(); 
 
-            $product->slug               =   str_slug($request->get('product_title'));
+            $table_cname = \Schema::getColumnListing('products');
+            $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
+           
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->file($value)){  
+                    $product->$value = Vendor::uploadImage($request, 'products' ,$value);
+                  
+               }else if($request->get($value)){
+                    $product->$value = $request->get($value);
+               }
+            } 
+            $product->slug   =   str_slug($request->get('product_title'));
+            $product->url    =   $url; 
 
-            $product->product_category   =   $request->get('product_category');
+            $product->save(); 
 
-            $product->description        =   $request->get('description');
+            \DB::commit(); 
+            $msg = 'New Product was successfully created !';
+        } catch (\Exception $e) {  
+             \DB::rollback(); 
+            $msg = $e->getMessage();
+        }    
 
-            $product->price              =   $request->get('price');
-
-            $product->discount           =   $request->get('discount');
-
-            $product->photo              =   $photo_name;
-
-            $product->meta_title         =   $request->get('meta_title');
-
-            $product->meta_key           =   $request->get('meta_key');
-
-            $product->meta_description   =   $request->get('meta_description');
-
-            $product->url                =   $url;
-
-            $product->unit               =   $request->get('pro_unit');
-
-            $product->product_type       =   $request->get('pro_type');
-
-            $product->total_stocks       =   $request->get('total_stocks');
-
-            $product->available_stocks   =   $request->get('available_stocks');
-
-            $product->save();
-
+        if($request->get('btn_name')=="Save & Continue"){
+            return Redirect::to(route('product.edit',$product->id))
+                            ->with('flash_alert_notice', $msg);  
         }
 
         return Redirect::to(route('product'))
-                            ->with('flash_alert_notice', 'New Product was successfully created !');
-
+                            ->with('flash_alert_notice', $msg);
     }
 
 
@@ -221,16 +226,11 @@ class ProductController extends Controller
         foreach ($category as $key => $value) {
              $cat[$value->category_name][$value->id] =  $value->sub_category_name;
         }
-
-        $categories =  Category::attr(['name' => 'product_category','class'=>'form-control form-cascade-control input-small'])
+        $categories =  Category::attr(['name' => 'product_category','class'=>'form-control form-cascade-control input-small','id'=>'product_category'])
                         ->selected(['id'=>$product->product_category])
                         ->renderAsDropdown();
-
-
-        $productunits =  ProductUnit :: where('status', 1)->pluck('name', 'id');
-
-        $producttypes =  ProductType :: where('status', 1)->pluck('name', 'id');
-
+        $productunits =  ProductUnit::where('status', 1)->pluck('name', 'id');
+        $producttypes =  ProductType::where('status', 1)->pluck('name', 'id');
 
         if(!empty($product->additional_images)){
             $additional_images = json_decode($product->additional_images);
@@ -239,139 +239,67 @@ class ProductController extends Controller
             $additional_images = '';
         }
 
-        return view('admin::product.edit', compact( 'categories','product', 'page_title', 'page_action','productunits','producttypes','additional_images'));
+        return view('admin::product.edit', compact( 'categories','product', 'page_title', 'page_action','productunits','producttypes','additional_images','category'));
     }
 
 
     public function update(ProductRequest $request, Product $product)
     {
-
         $cat_url    = $this->getCategoryById($request->get('product_category'));
-
         $pro_slug   = str_slug($request->get('product_title'));
-
         $url        = $cat_url.$pro_slug;
 
-        if ($request->hasfile('image')) {
-
-            $photo = $request->file('image');
-
+        if ($request->file('image')) {
             $destinationPath = storage_path('uploads/products');
-
-            $photo->move($destinationPath, time().$photo->getClientOriginalName());
-
-            $photo_name = time().$photo->getClientOriginalName();
-
-            $request->merge(['photo'=>$photo_name]);
-
             if($request->hasfile('images'))
             {
                 foreach($request->file('images') as $image)
                 {
                     $image->move($destinationPath, time().$image->getClientOriginalName());
-
                     $name =  time().$image->getClientOriginalName();
-
                     $images[] = $name;
                 }
-
-                $add_img = $request->get('add_img');
-
-                $all_images =  array_merge($add_img,$images);
-
-                $product->additional_images  = json_encode($all_images);
+                $product->additional_images  = json_encode($images);
             }
+        }    
 
+          try {
+            \DB::beginTransaction(); 
 
-            $product->product_title      =   $request->get('product_title');
+            $table_cname = \Schema::getColumnListing('products');
+            $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
+           
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->file($value)){  
+                    $product->$value = Vendor::uploadImage($request, 'products' ,$value);
+                  
+               }else if($request->get($value)){
+                    $product->$value = $request->get($value);
+               }
+            } 
+            $product->slug   =   str_slug($request->get('product_title'));
+            $product->url    =   $url; 
 
-            $product->slug               =   str_slug($request->get('product_title'));
+            $product->save(); 
 
-            $product->product_category   =   $request->get('product_category');
+            \DB::commit(); 
+            $msg = 'Product was successfully updated!';
+        } catch (\Exception $e) {  
+             \DB::rollback(); 
+            $msg = $e->getMessage();
+        }    
 
-            $product->description        =   $request->get('description');
-
-            $product->price              =   $request->get('price');
-
-            $product->discount           =   $request->get('discount');
-
-            $product->photo              =   $photo_name;
-
-            $product->meta_title         =   $request->get('meta_title');
-
-            $product->meta_key           =   $request->get('meta_key');
-
-            $product->meta_description   =   $request->get('meta_description');
-
-            $product->url                =   $url;
-
-            $product->unit               =   $request->get('pro_unit');
-
-            $product->product_type       =   $request->get('pro_type');
-
-            $product->total_stocks       =   $request->get('total_stocks');
-
-            $product->available_stocks   =   $request->get('available_stocks');
-
-
-
-        }else{
-
-        if($request->hasfile('images'))
-            {
-                $destinationPath = storage_path('uploads/products');
-                foreach($request->file('images') as $image)
-                {
-                    $image->move($destinationPath, time().$image->getClientOriginalName());
-
-                    $name =  time().$image->getClientOriginalName();
-
-                    $images[] = $name;
-                }
-
-                $add_img = $request->get('add_img');
-
-                $all_images =  array_merge($add_img,$images);
-
-                $product->additional_images  = json_encode($all_images);
-            }
-
-            $product->product_title      =   $request->get('product_title');
-
-            $product->slug               =   str_slug($request->get('product_title'));
-
-            $product->product_category   =   $request->get('product_category');
-
-            $product->description        =   $request->get('description');
-
-            $product->price              =   $request->get('price');
-
-            $product->discount           =   $request->get('discount');
-
-            $product->photo              =   $request->get('photo');
-
-            $product->meta_title         =   $request->get('meta_title');
-
-            $product->meta_key           =   $request->get('meta_key');
-
-            $product->meta_description   =   $request->get('meta_description');
-
-            $product->url                =   $url;
-
-            $product->unit               =   $request->get('pro_unit');
-
-            $product->product_type       =   $request->get('pro_type');
-
-            $product->total_stocks       =   $request->get('total_stocks');
-
-            $product->available_stocks   =   $request->get('available_stocks');
-
+        if($request->get('btn_name')=="Save & Continue"){
+            return Redirect::to(route('product.edit',$product->id))
+                            ->with('flash_alert_notice', $msg);  
         }
 
-        $product->save();
-
         return Redirect::to(route('product'))
-                        ->with('flash_alert_notice', 'Product was  successfully updated !');
+                            ->with('flash_alert_notice', $msg);
     }
 
 }

@@ -5,9 +5,17 @@ declare(strict_types=1);
 namespace Modules\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Eloquent
 {
+    use SoftDeletes;
+  /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
     /**
      * The database table used by the model.
      *
