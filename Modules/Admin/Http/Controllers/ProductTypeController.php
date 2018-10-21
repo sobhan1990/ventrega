@@ -35,7 +35,7 @@ class ProductTypeController extends Controller
         $this->middleware('admin');
         View::share('viewPage', 'Product');
         View::share('helper', new Helper);
-        View::share('heading', 'Product Type');
+        View::share('heading', 'Product Types');
         View::share('route_url', route('product-type'));
 
         $this->record_per_page = Config::get('app.record_per_page');
@@ -89,7 +89,7 @@ class ProductTypeController extends Controller
 
     public function create(ProductType $producttype)
     {
-        $page_title  = 'Product Type';
+        $page_title  = 'Edit Product Type';
         $page_action = 'Edit Product Type';
         return view('admin::type.create', compact('producttype','page_title', 'page_action'));
     }
@@ -98,22 +98,14 @@ class ProductTypeController extends Controller
      * Save Group method
      * */
 
-    public function store(ProductTypeRequest $request, ProductType $producttype)
+    public function store(Request $request, ProductType $producttype)
     {
-
-        $validate_type = ProductType::where('name', $request->get('name'))->first();
-
-        if ($validate_type) {
-            return  Redirect::back()->withInput()->with(
-                'field_errors',
-                  'The  Product type name already been taken!'
-            );
-        }
+        $request->validate([
+             'name'  => 'required|unique:product_units,name',  
+        ]);
 
         $producttype->name =  $request->get('name');
-
         $producttype->status =  1;
-
         $producttype->save();
 
         return Redirect::to(route('product-type'))
@@ -128,8 +120,7 @@ class ProductTypeController extends Controller
 
     public function edit(Request $request, $producttype)
     {
-
-        $page_title  = 'Product Type';
+        $page_title  = 'Edit Product Type';
         $page_action = 'Edit Product Type';
 
         return view('admin::type.edit', compact('producttype' ,'page_title', 'page_action'));
@@ -137,17 +128,12 @@ class ProductTypeController extends Controller
 
     public function update(ProductTypeRequest $request, $producttype)
     {
+        $request->validate([
+             'name'  => 'required|unique:product_units,name,'.$producttype->id,  
+        ]);
 
-        $type_cat = ProductType::where('name', $request->get('name'))->first();
-
-        if ($type_cat) {
-            return  Redirect::back()->withInput()->with(
-                'field_errors',
-                  'The  Product type name already been taken!'
-            );
-        }
-        $producttype->name        =  $request->get('name');
-        $producttype->status         =  1;
+        $producttype->name    =  $request->get('name');
+        $producttype->status  =  1;
         $producttype->save();
 
         return Redirect::to(route('product-type'))

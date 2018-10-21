@@ -38,7 +38,7 @@ class ProductUnitController extends Controller
 
         View::share('helper', new Helper);
 
-        View::share('heading', 'Product Unit');
+        View::share('heading', 'Product Units');
 
         View::share('route_url', route('product-unit'));
 
@@ -92,9 +92,9 @@ class ProductUnitController extends Controller
 
     public function create(ProductUnit $productunit)
     {
-        $page_title  = 'Product Unit';
+        $page_title  = 'Create Product Unit';
 
-        $page_action = 'View Product Unit';
+        $page_action = 'Create Product Unit';
 
         return view('admin::unit.create', compact('productunit','page_title', 'page_action'));
     }
@@ -103,22 +103,14 @@ class ProductUnitController extends Controller
      * Save Group method
      * */
 
-    public function store(ProductUnitRequest $request, ProductUnit $productunit)
+    public function store(Request $request, ProductUnit $productunit)
     {
-
-        $validate_unit = ProductUnit::where('name', $request->get('name'))->first();
-
-        if ($validate_unit) {
-            return  Redirect::back()->withInput()->with(
-                'field_errors',
-                  'The  Product unit already been taken!'
-            );
-        }
+       $request->validate([
+             'name'  => 'required|unique:product_units,name',  
+        ]);
 
         $productunit->name =  $request->get('name');
-
         $productunit->status =  1;
-
         $productunit->save();
 
         return Redirect::to(route('product-unit'))
@@ -133,25 +125,19 @@ class ProductUnitController extends Controller
 
     public function edit(Request $request, $productunit)
     {
-
-        $page_title  = 'Product Unit';
-
+        $page_title  = 'Edit Product Unit';
         $page_action = 'Edit Product Unit';
 
         return view('admin::unit.edit', compact('productunit' ,'page_title', 'page_action'));
     }
 
-    public function update(ProductUnitRequest $request, $productunit)
+    public function update(Request $request, $productunit)
     {
 
-        $unit = ProductUnit::where('name', $request->get('name'))->first();
+        $request->validate([
+             'name'  => 'required|unique:product_units,name,'.$productunit->id,  
+        ]);
 
-        if ($unit) {
-            return  Redirect::back()->withInput()->with(
-                'field_errors',
-                  'The  Product unit already been taken!'
-            );
-        }
         $productunit->name        =  $request->get('name');
         $productunit->status      =  1;
         $productunit->save();

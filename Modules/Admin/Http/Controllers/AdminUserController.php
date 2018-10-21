@@ -37,7 +37,7 @@ class AdminUserController  extends Controller
         $this->middleware('admin');
         View::share('viewPage', 'Users');
         View::share('helper', new Helper);
-        View::share('heading', 'Admin User');
+        View::share('heading', 'Admin Users');
         View::share('route_url', route('adminUser'));
 
         $this->record_per_page = Config::get('app.record_per_page');

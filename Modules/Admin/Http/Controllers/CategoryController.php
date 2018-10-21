@@ -35,7 +35,7 @@ class CategoryController extends Controller
         $this->middleware('admin');
         View::share('viewPage', 'Product'); 
         View::share('helper', new Helper);
-        View::share('heading', 'Categories');
+        View::share('heading', 'Store Categories');
         View::share('route_url', route('category'));
 
         $this->record_per_page = Config::get('app.record_per_page');
