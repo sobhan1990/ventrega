@@ -48,7 +48,8 @@
                             <th> Commision </th>
                               <th> Total Product Added </th>
                               <th></th>
-                            <th> Image </th>  
+                              <th> Over All Commissions </th>
+                            <th> Image </th>
                             <th> Created date</th> 
                             <th> Action</th> 
                         </tr>
@@ -78,6 +79,9 @@
                               <td>
                              <a href="{{url(route('product').'?category_id='.$result->id.'&category='.$result->slug)}}" >View Products </a>
                            </td>
+                         <td> {{
+                          money_format("%.2n",
+                         ($result->products->sum('store_price'))*($result->commission)/100).' INR' }} </td>
                             <td>
                             <a href="{{ asset($result->category_image)  }}" target="_blank" data-popup="lightbox" >
                             <img src="{{ asset($result->category_image)  }}" width="100px" height="50px;" >
