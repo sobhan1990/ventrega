@@ -31,7 +31,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('admin');
-        View::share('viewPage', 'setting');
+        View::share('viewPage', 'Setting');
         View::share('helper', new Helper);
         $this->record_per_page = Config::get('app.record_per_page');
         View::share('route_url', route('setting'));

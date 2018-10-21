@@ -33,7 +33,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->middleware('admin');
-        View::share('viewPage', 'Category'); 
+        View::share('viewPage', 'Product'); 
         View::share('helper', new Helper);
         View::share('heading', 'Categories');
         View::share('route_url', route('category'));

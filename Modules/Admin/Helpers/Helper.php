@@ -14,14 +14,10 @@ use Modules\Admin\Models\Vendor;
 use Route;
 use View;
 use Session;
-use Hash;
-
-
-
+use Hash; 
 
 class Helper
-{
-    
+{ 
     /*
     * get user profile
     */

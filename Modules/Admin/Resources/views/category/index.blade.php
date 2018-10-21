@@ -87,18 +87,17 @@
                           </td>
                       <td> 
                                     
-                            <a href="{{ route('category.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin-left: 20px">
-                            <i class="fa fa-edit" title="edit"></i> Edit
-                            </a>
+                            <a href="{{ route('category.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin: 5px">
+                            <i class="icon-pencil7" title="edit"></i>  
+                            </a> 
 
-                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'route' => array('category.destroy', $result->id))) !!}
+                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'style'=>'margin:5px', 'route' => array('category.destroy', $result->id))) !!}
 
-                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="fa fa-trash" title="Delete"></i> Delete
-                            </button>
-
+                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="icon-trash" title="Delete"></i> 
+                            </button> 
                             {!! Form::close() !!}
 
-                                </td>
+                            </td>
                            
                         </tr>
                        @endforeach

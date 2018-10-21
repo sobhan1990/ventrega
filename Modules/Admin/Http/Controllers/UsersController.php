@@ -89,9 +89,9 @@ class UsersController extends Controller
                 if ($role_type) {
                     $query->Where('role_type', $role_type);
                 }
-            })->where('role_type', 1)->Paginate($this->record_per_page);
+            })->where('role_type', 3)->Paginate($this->record_per_page);
         } else {
-            $users = User::orderBy('id', 'desc')->where('role_type', 1)->Paginate($this->record_per_page);
+            $users = User::orderBy('id', 'desc')->where('role_type', 3)->Paginate($this->record_per_page);
         }
         $roles = Roles::all();
 

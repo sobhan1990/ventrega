@@ -45,7 +45,7 @@ class SubCategoryController extends Controller {
      */
     public function __construct() {
         $this->middleware('admin');
-        View::share('viewPage', 'Category');
+        View::share('viewPage', 'Product');
         View::share('helper',new Helper);
         View::share('heading','Sub Category');
         $this->record_per_page = Config::get('app.record_per_page');

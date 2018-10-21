@@ -6,7 +6,7 @@
 
       @include('admin::partials.breadcrumb')
 
-       @include('admin::partials.sidebar')
+       @include('admin::partials.sidebar') 
 
             <div class="panel panel-white">
   		          <div class="panel panel-flat">
@@ -60,8 +60,7 @@
                             <th> Category </th>
                             <th> Stock Price </th> 
                             <th> MRP </th>
-                            <th> Discount </th>
-                             <th> Discount Type </th>
+                            <th> Discount </th> 
                             <th> Discount Price </th>
                             <th> Status</th>
                             <th> Created date</th>
@@ -69,7 +68,7 @@
                         </tr>
                          @if(count($products )==0)
                             <tr>
-                                <td colspan="8">
+                                <td colspan="12">
                                     <div class="alert alert-danger alert-dismissable">
                                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                                         <i class="icon fa fa-check"></i>  
@@ -102,8 +101,7 @@
                             <td>{{$result->category->category_name??null}}</td>
                             <td>{{ money_format("%.2n", (float)$result->store_price)}} INR</td> 
                             <td>{{ money_format("%.2n", (float)$result->price)}} INR</td>
-                            <td>{{ money_format("%.2n", (float)$result->discount)}} INR</td>
-                            <td>{{ money_format("%.2n", (float)$result->discount_type)}} INR</td>
+                            <td>{{ money_format("%.2n", (float)$result->discount)}} ({{$result->discount_type}})  </td> 
                             <td>{{ money_format("%.2n", (float)$result->discount_price)}} INR</td>
                             <td>
                                 <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'product')" >
@@ -113,19 +111,18 @@
                             <td>
                                     {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}
                             </td>
-                           <td>
-                            <a href="{{ route('product.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin-left: 20px">
-                            <i class="fa fa-edit" title="edit"></i> Edit
-                            </a>
+                           <td> 
+                             <a href="{{ route('product.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin: 3px">
+                            <i class="icon-pencil7" title="edit"></i>  
+                            </a> 
 
-                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'route' => array('product.destroy', $result->id))) !!}
+                            {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'style'=>'margin:3px', 'route' => array('product.destroy', $result->id))) !!}
 
-                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="fa fa-trash" title="Delete"></i> Delete
-                            </button>
+                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="icon-trash" title="Delete"></i> 
+                            </button> 
+                            {!! Form::close() !!} 
 
-                            {!! Form::close() !!}
-
-                                </td>
+                            </td>
 
                         </tr>
                        @endforeach
