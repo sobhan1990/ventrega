@@ -37,7 +37,7 @@ class VendorController extends Controller
         $this->middleware('admin');
         View::share('viewPage', 'Vendor');
         View::share('helper', new Helper);
-        View::share('heading', 'Vendors');
+        View::share('heading', 'Store Vendors');
         View::share('route_url', route('vendor'));
 
         $this->record_per_page = Config::get('app.record_per_page');

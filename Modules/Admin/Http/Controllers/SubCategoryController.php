@@ -47,7 +47,7 @@ class SubCategoryController extends Controller {
         $this->middleware('admin');
         View::share('viewPage', 'Product');
         View::share('helper',new Helper);
-        View::share('heading','Sub Category');
+        View::share('heading','Store Sub Categories');
         $this->record_per_page = Config::get('app.record_per_page');
         View::share('route_url',route('sub-category'));
 
@@ -61,9 +61,8 @@ class SubCategoryController extends Controller {
 
     public function index(Category $category, Request $request)
     {
-        $page_title = 'Category';
-        $sub_page_title = 'Sub Category';
-        $page_action = 'View Sub Category';
+        $page_title = 'Sub Categories';
+        $sub_page_title = 'Sub Categories'; 
         if ($request->ajax()) {
             $id = $request->get('id');
             $category = Category::find($id);
