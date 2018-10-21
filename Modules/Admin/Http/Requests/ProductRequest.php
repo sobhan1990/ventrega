@@ -22,14 +22,13 @@ class ProductRequest extends FormRequest
                     }
                 case 'POST': {
                         return [
-                            'product_title'     => "required|unique:products,product_title" ,
+                            'product_title'     => "required" ,
                             'product_category'  => 'required',
                             'description'       => 'required',
-                            'price'             => 'required|numeric|min:0',
-                            'discount'          => 'required|numeric|min:0',
+                            'price'             => 'required|numeric|min:0', 
                             'available_stocks'  => 'numeric',
                             'totla_stocks'      => 'numeric',
-                            'image'             => 'required|mimes:jpeg,bmp,png,gif',
+                            'photo'             => 'required|mimes:jpeg,bmp,png,gif',
                             'images.*'          => 'mimes:jpeg,bmp,png,gif'
                         ];
                     }
@@ -40,11 +39,10 @@ class ProductRequest extends FormRequest
                             'product_title'     => "required",
                             'product_category'  => 'required',
                             'description'       => 'required',
-                            'price'             => 'required|numeric|min:0',
-                            'discount'          => 'required|numeric|min:0',
+                            'price'             => 'required|numeric|min:0', 
                             'available_stocks'  => 'numeric',
                             'totla_stocks'      => 'numeric',
-                            'image'             => 'mimes:jpeg,bmp,png,gif',
+                            'photo'             => 'mimes:jpeg,bmp,png,gif',
                             'images.*'          => 'mimes:jpeg,bmp,png,gif'
                         ];
 

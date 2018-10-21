@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 namespace Modules\Admin\Http\Controllers;
-
-use App\Helpers\Helper;
+    
 use App\Http\Controllers\Controller;
 use Hash;
 use Illuminate\Http\Request;
@@ -14,6 +13,7 @@ use Input;
 use Modules\Admin\Models\Roles;
 use Modules\Admin\Models\User;
 use Modules\Admin\Models\Vendor;
+use Modules\Admin\Helpers\Helper;
 use Route;
 use View;
 use Session;
@@ -132,25 +132,37 @@ class VendorController extends Controller
             'pincode' => 'required',
         ]);
 
+        try {
+            \DB::beginTransaction(); 
 
-        $table_cname = \Schema::getColumnListing('vendors');
-        $except = ['id','created_at','updated_at','deleted_at'];
-        
-        foreach ($table_cname as $key => $value) {
-           
-           if(in_array($value, $except )){
-                continue;
-           } 
-           if($request->file($value)){
-                $vendor->$value = Vendor::uploadImage($request, 'vendor' ,$value);
-           }else if($request->get($value)){
-                $vendor->$value = $request->get($value);
-           }
-           
-        }
-        $vendor->vendor_name = $request->get('first_name').' '.$request->get('last_name');
-        
-        $vendor->save(); 
+            $table_cname = \Schema::getColumnListing('vendors');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->file($value)){
+                    $vendor->$value = Vendor::uploadImage($request, 'vendor' ,$value);
+               }else if($request->get($value)){
+                    $vendor->$value = $request->get($value);
+               }
+            }
+            $vendor->user_id = Helper::userCreateOrUpdate($request, $user_id=null);;
+            $vendor->vendor_name = $request->get('first_name').' '.$request->get('last_name');
+            $vendor->save(); 
+
+            $user = User::find($vendor->user_id);
+            if($user){
+                $user->profile_image = $vendor->profile_picture;
+                $user->save();
+            }
+
+            \DB::commit();
+        } catch (\Exception $e) { 
+            \DB::rollback();  
+        } 
         
         return Redirect::to($this->defaultUrl)
             ->with('flash_alert_notice', $this->createMessage);
@@ -169,6 +181,9 @@ class VendorController extends Controller
 
         $role_id     = $vendor->role_type;
         $roles       = config('role');
+        $user = Helper::getUser($vendor->user_id);
+        $vendor->first_name = $user->first_name??'';
+        $vendor->last_name = $user->last_name??'';
        
         return view($this->editUrl, compact( 'role_id', 'roles', 'vendor', 'page_title', 'page_action'));
     }
@@ -186,25 +201,40 @@ class VendorController extends Controller
         ]);
 
 
-        $table_cname = \Schema::getColumnListing('vendors');
-        $except = ['id','created_at','updated_at','deleted_at'];
-        
-        foreach ($table_cname as $key => $value) {
+        try {
+            \DB::beginTransaction(); 
+
+            $table_cname = \Schema::getColumnListing('vendors');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->file($value)){
+                    $vendor->$value = Vendor::uploadImage($request, 'vendor' ,$value);
+               }else if($request->get($value)){
+                    $vendor->$value = $request->get($value);
+               }
+            }
+            $vendor->user_id = Helper::userCreateOrUpdate($request, $vendor->user_id);
+            $vendor->vendor_name = $request->get('first_name').' '.$request->get('last_name');
+            
+            $vendor->save(); 
+
+
+            $user = User::find($vendor->user_id);
+            if($user){
+                $user->profile_image = $vendor->profile_picture;
+                $user->save();
+            }
+
+            \DB::commit();
+        } catch (\Exception $e) {  
+            \DB::rollback(); 
            
-           if(in_array($value, $except )){
-                continue;
-           } 
-           if($request->file($value)){
-                $vendor->$value = Vendor::uploadImage($request, 'vendor' ,$value);
-           }else if($request->get($value)){
-                $vendor->$value = $request->get($value);
-           }
-           
-        }
-        $vendor_name = $request->get('first_name').' '.$request->get('last_name');
-        
-        $vendor->save(); 
-        
+        }  
 
         return Redirect::to($this->defaultUrl)
             ->with('flash_alert_notice', $this->updateMessage);

@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Nestable\NestableTrait;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+ 
 class Category extends Eloquent
 {
     use NestableTrait;
+    use SoftDeletes;
     
     protected $parent = 'parent_id';
 
@@ -51,7 +54,12 @@ class Category extends Eloquent
      */
 
     public function parentCategory(){
-        return $this->belongsTo('Modules\Admin\Models\Category', 'parent_id', 'id');
+        return $this->belongsTo('Modules\Admin\Models\Category', 'parent_id');
+    }
+
+
+    public function products(){
+        return $this->hasMany('Modules\Admin\Models\Product', 'product_category');
     }
 
     // images

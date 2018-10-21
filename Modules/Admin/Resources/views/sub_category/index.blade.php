@@ -43,6 +43,9 @@
 	                    	 <th>  Sno. </th>
 	                        <th> Sub Category Name </th>
 	                        <th> Category Name </th>
+                          <th> Commission </th>
+                          <th> Total Product Added </th>
+                          <th></th>
 	                        <th> Image </th>
 	                        <th>Created date</th>
 	                        <th>Action</th>
@@ -52,10 +55,18 @@
 	                @foreach($categories as $key => $result)
 	                    <tr>
 	                    	<td> {{++$key}} </td>
-	                        <td> {{$result->sub_category_name}} </td>
-	                        <td> {{$result->parentCategory->category_name}} </td>
+	                        <td> 
+                            <a href="{{url(route('product').'?category_id='.$result->id.'&category='.$result->slug)}}" >
+                            {{$result->sub_category_name}} </a> </td>
+	                        <td> {{$result->parentCategory->category_name??'NA'}} </td>
+                          <td> {{$result->commission??0}}% </td>
+                          <td> {{$result->products->count()??0}}
+                           </td>
+                           <td>
+                             <a href="{{url(route('product').'?category_id='.$result->id.'&category='.$result->slug)}}" >View Products </a>
+                           </td>
 	                        <td>
-	                        <a href="{{ url($result->category_image)  }}" target="_blank" >
+	                        <a href="{{ url($result->category_image)  }}" target="_blank" data-popup="lightbox">
 	                        <img src="{{url($result->category_image)  }}" width="100px" height="50px;"> </a>  </td>
 
 	                             <td>

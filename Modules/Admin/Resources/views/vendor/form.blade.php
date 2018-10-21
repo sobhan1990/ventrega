@@ -65,6 +65,15 @@
                   </div> 
               </div>
  
+              <div class="col-md-6">
+                  <div class="form-group {{ $errors->first('commission', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                      <label class="control-label  ">Commision(%):<span class="required"> * </span></label>
+                          {!! Form::number('commission',null, ['class' => 'form-control','data-required'=>1])  !!} 
+                          <span class="help-block" style="color:red">{{ $errors->first('commission', ':message') }} </span>
+                  </div> 
+              </div>
+ 
+
               </div> 
   
             </fieldset>
@@ -85,7 +94,7 @@
               <div class="col-md-6">
                   <div class="form-group {{ $errors->first('type', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                       <label class="control-label  ">Shop type:<span class="required"> * </span></label>
-                          {!! Form::text('type',null, ['class' => 'form-control','data-required'=>1])  !!} 
+                          {!! Form::text('type',null, ['class' => 'form-control tokenfield-primary','data-required'=>1])  !!} 
                           <span class="help-block" style="color:red">{{ $errors->first('type', ':message') }} </span>
                   </div> 
               </div>

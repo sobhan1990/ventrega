@@ -71,15 +71,14 @@ class CategoryController extends Controller
         if ((isset($search) && !empty($search))) {
             $search = isset($search) ? Input::get('search') : '';
 
-            $categories = Category::where(function ($query) use ($search,$status) {
+            $categories = Category::with('products')->where(function ($query) use ($search,$status) {
                 if (!empty($search)) {
                     $query->Where('category_name', 'LIKE', "%$search%");
                 }
             })->orderBy('id', 'DESC')->where('parent_id', 0)->Paginate($this->record_per_page);
         } else {
-            $categories = Category::orderBy('id', 'ASC')->where('parent_id', 0)->Paginate($this->record_per_page);
+            $categories = Category::with('products')->orderBy('id', 'ASC')->where('parent_id', 0)->Paginate($this->record_per_page);
         }
-
 
         return view('admin::category.index', compact('categories', 'page_title', 'page_action'));
     }
@@ -129,6 +128,7 @@ class CategoryController extends Controller
         $category->category_name  =  $request->get('category_name');
         $category->level          =  1;
         $category->description    =  $request->get('description');
+        $category->commission    =  $request->get('commission');
 
 
         $category->save();
@@ -185,6 +185,7 @@ class CategoryController extends Controller
         $category->category_name  =  $request->get('category_name');
         $category->level          =  1;
         $category->description    =  $request->get('description');
+        $category->commission    =  $request->get('commission');
 
 
         $category->save();

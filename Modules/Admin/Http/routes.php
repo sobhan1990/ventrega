@@ -3,6 +3,7 @@
 Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Modules\Admin\Http\Controllers'], function()
 {
  
+ Route::post('delete/all', 'AdminController@deleteAll');
 
    Route::match(['get','post'],'upload', function(Illuminate\Http\Request $request){
      echo "<pre>";

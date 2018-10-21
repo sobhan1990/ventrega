@@ -1,8 +1,11 @@
+@foreach($category  as $key => $val)
+    <input type="hidden" id="{{$val->id}}" value="{{$val->commission??0}}" >
+@endforeach
+<input type="hidden" id="charges" value="0">
+<fieldset class="step ui-formwizard-content" id="step1" style="display: block; margin-left: 30px">
+   
 
-<fieldset class="step ui-formwizard-content" id="step1" style="display: block;">
-
-<div class="row">
-
+<div class="row"> 
 
 <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-highlight">
@@ -20,7 +23,15 @@
         </ul>
         <div class="tab-content">
 
-                <div class="tab-pane active" id="1">
+              @if(Session::has('flash_alert_notice'))
+               <div class="alert alert-success alert-dismissable" style="margin:10px">
+                  <button aria-hidden="true" data-dismiss="alert"  class="close" type="button">×</button>
+                <i class="icon fa fa-check"></i>  
+               {{ Session::get('flash_alert_notice') }} 
+               </div>
+          @endif
+
+            <div class="tab-pane active" id="1"> 
 
                 <div class="col-md-12">
                         <div class="form-group {{ $errors->first('product_title', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
@@ -33,7 +44,7 @@
                         </div>
                 </div>
 
-                    <div class="col-md-12">
+                <div class="col-md-12">
                         <div class="form-group {{ $errors->first('product_category', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                             <label class="control-label col-md-2">Select Category <span class="required"> * </span></label>
                             <div class="col-md-6">
@@ -43,11 +54,35 @@
                         </div>
                     </div>
 
+                <div class="col-md-12 commission" style="display: none">
+                        <div class="form-group {{ $errors->first('commission', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                            <label class="control-label col-md-2">Commission(%)<span class="required"> * </span></label>
+                            <div class="col-md-6">
+                                 <input type="text" disabled="" class="form-control" id="commission" value="0">
+
+                                <span class="help-block" style="color:red">{{ $errors->first('commission', ':message') }}</span>
+                            </div>
+                        </div>
+                </div>  
+
+                 
+
                     <div class="col-md-12">
-                            <div class="form-group {{ $errors->first('price', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
-                                <label class="control-label col-md-2">Product Price<span class="required"> * </span></label>
+                            <div class="form-group {{ $errors->first('store_price', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Store Price<span class="required"> * </span></label>
                                 <div class="col-md-6">
-                                    {!! Form::text('price',null, ['class' => 'form-control','data-required'=>1])  !!}
+                                    {!! Form::text('store_price',null, ['class' => 'form-control','data-required'=>1,'id'=>'store_price'])  !!}
+
+                                    <span class="help-block" style="color:red">{{ $errors->first('store_price', ':message') }}</span>
+                                </div>
+                            </div>
+                    </div>
+
+                     <div class="col-md-12">
+                            <div class="form-group {{ $errors->first('price', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Product MRP<span id="mrp"></span><span class="required"> * </span></label>
+                                <div class="col-md-6">
+                                    {!! Form::text('price',null, ['class' => 'form-control','data-required'=>1,'id'=>'price'])  !!}
 
                                     <span class="help-block" style="color:red">{{ $errors->first('price', ':message') }}</span>
                                 </div>
@@ -55,14 +90,41 @@
                     </div>
 
                     <div class="col-md-12">
-                            <div class="form-group {{ $errors->first('discount', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
-                                <label class="control-label col-md-2">Product discount (%)<span class="required"> * </span></label>
+                            <div class="form-group {{ $errors->first('discount_type', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Discount type<span class="required"> * </span></label>
                                 <div class="col-md-6">
-                                        {!! Form::number('discount',null, ['class' => 'form-control form-cascade-control input-small','min'=>0])  !!}
+                                   <select name="discount_type" class="form-control" id="discount_type" > 
+                                   	<option value="fixed">Fixed Discount</option>
+                                   	<option value="percentage">Percentage Discount</option>
+                                   </select>
+
+                                    <span class="help-block" style="color:red">{{ $errors->first('discount_type', ':message') }}</span>
+                                </div>
+                            </div>
+                    </div>
+
+                     <div class="col-md-12">
+                            <div class="form-group {{ $errors->first('discount', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Product discount<span class="required"> * </span></label>
+                                <div class="col-md-6">
+                                        {!! Form::text('discount',null, ['class' => 'form-control form-cascade-control input-small','min'=>0,'id'=>'discount','minlength'=>1])  !!}
                                 <span class="help-block" style="color:red">{{ $errors->first('discount', ':message') }}</span>
                                 </div>
                             </div>
                     </div>
+
+
+                     <div class="col-md-12">
+                            <div class="form-group {{ $errors->first('discount_price', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                                <label class="control-label col-md-2">Discounted price<span class="required"> * </span></label>
+                                <div class="col-md-6">
+                                    {!! Form::text('discount_price',null, ['class' => 'form-control','data-required'=>1,'id'=>'discount_price','minlength'=>1])  !!}
+
+                                    <span class="help-block" style="color:red">{{ $errors->first('discount_price', ':message') }}</span>
+                                </div>
+                            </div>
+                    </div> 
+                   
 
 
                     <div class="col-md-12">
@@ -70,7 +132,7 @@
                             <label class="control-label col-md-2">Product Type <span class="required"> * </span></label>
                             <div class="col-md-6">
 
-                                {!! Form::select( 'pro_type', $producttypes,$product->product_type,['class' => 'form-control form-cascade-control'])  !!}
+                                {!! Form::select( 'pro_type', $producttypes,$product->product_type,['class' => 'form-control form-cascade-control','placeholder'=>'select product packet type'])  !!}
 
                                 <span class="help-block" style="color:red">{{ $errors->first('pro_type', ':message') }}</span>
                             </div>
@@ -81,7 +143,7 @@
                             <div class="form-group {{ $errors->first('pro_unit', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Unit Description <span class="required"> * </span></label>
                                 <div class="col-md-6">
-                                    {!! Form::select('pro_unit',$productunits,$product->unit,['class' => 'form-control form-cascade-control'])  !!}
+                                    {!! Form::select('pro_unit',$productunits,$product->unit,['class' => 'form-control form-cascade-control','placeholder'=>'select product unit'])  !!}
 
                                     <span class="help-block" style="color:red">{{ $errors->first('pro_unit', ':message') }}</span>
                                 </div>
@@ -93,8 +155,8 @@
                     <div class="col-md-12">
                             <div class="form-group {{ $errors->first('description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Description <span class="required"> * </span></label>
-                                <div class="col-md-10">
-                                        {!! Form::textarea('description',null, ['class' => 'form-control summernote'])  !!}
+                                <div class="col-md-6">
+                                        {!! Form::textarea('description',null, ['class' => 'form-control summernote' ,'id'=>'textarea'])  !!}
                                         <span class="help-block" style="color:red">{{ $errors->first('description', ':message') }}</span>
                                         @if(Session::has('flash_alert_notice'))
                                         <span class="label label-danger">
@@ -105,14 +167,30 @@
                             </div>
                     </div>
 
-                    {{-- <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="form-group  {{ $errors->first('photo', ' has-error') }}">
+                    <label class="control-label col-md-2"> Default Image <span class="required"> * </span></label>
+                    <div class="col-lg-6">
+                        @if(isset($product->photo))
+                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                    <img src=" {{ url($product->photo) ?? 'http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image'}}" alt=""> </div>
+                    @endif
+                        <input type="file" class="file-input" name="photo">
+                         <span class="help-block" style="color:#e73d4a">{{ $errors->first('photo', ':message') }}</span>
+                    
+                    </div>
+                </div>
+            </div>
+
+
+             <div class="col-md-12">
                             <div class="form-group {{ $errors->first('status', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Status</label>
                                 <div class="col-md-6">
-                                        {!! Form::select('status',array('publish' => 'Publish', 'unpublish' => 'Unpublish'),null,['class' => 'form-control form-cascade-control'])  !!}
+                                        {!! Form::select('status',array('1' => 'Publish', '2' => 'Unpublish'),null,['class' => 'form-control form-cascade-control'])  !!}
                                 </div>
                             </div>
-                    </div> --}}
+                    </div>  
 
 
                 <div class="clearfix">&nbsp;</div>
@@ -155,7 +233,7 @@
                             <div class="form-group {{ $errors->first('meta_key', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Meta Key</label>
                                 <div class="col-md-6">
-                                        {!! Form::text('meta_key',null, ['class' => 'form-control form-cascade-control input-small'])  !!}
+                                        {!! Form::text('meta_key',null, ['class' => 'form-control tokenfield-primary'])  !!}
                                         <span class="help-block" style="color:red">{{ $errors->first('meta_key', ':message') }}</span>
                                 </div>
                             </div>
@@ -166,7 +244,7 @@
                                 &nbsp; &nbsp;
                                 <div class="form-group {{ $errors->first('meta_description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                     <label class="control-label col-md-2">Meta Description</label>
-                                    <div class="col-md-10">
+                                    <div class="col-md-6">
                                             {!! Form::textarea('meta_description',null, ['class' => 'form-control summernote'])  !!}
                                             <span class="help-block" style="color:red">{{ $errors->first('meta_description', ':message') }}</span>
                                             @if(Session::has('flash_alert_notice'))
@@ -179,40 +257,11 @@
                 </div>
 
 
-                <div class="tab-pane" id="3">
+                <div class="tab-pane" id="3" style="min-height: 330px"> 
 
-                        <div class="col-md-12">
-                                &nbsp;&nbsp;
-                            <div class="form-group{{ $errors->first('image', ' has-error') }}">
-                                    <label class="col-lg-2 col-md-2 control-label">Default Product Image <span class="required"> * </span></label>
-                                    <div class="col-lg-6 col-md-6">
-                                        {!! Form::file('image',null,['class' => 'form-control form-cascade-control input-small'])  !!}
-                                        <span class="help-block" style="color:red">{{ $errors->first('image', ':message') }}</span>
-                                        <br>
-                                        @if(!empty($product->photo))
-                                            <input type="hidden" name="photo" value="{!! $product->photo !!}">
-                                            <div class="col-md-4">
-                                                <div class="thumbnail">
-                                                <div class="thumb">
-                                                <img class="img-rounded" width="150" height="150" src="{!! url('storage/uploads/products/'.$product->photo) !!}">
-                                                <div class="caption-overflow">
-                                                <span>
-                                                <a href="{!! url('storage/uploads/products/'.$product->photo) !!}" data-popup="lightbox" class="btn border-white text-white btn-flat btn-icon btn-rounded"><i class="icon-plus3"></i></a>
-                                                </span>
-                                                </div>
-                                                </div>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                    </div>
-                                </div>
-                        </div>
-
-                        <div class="col-md-12">
-                                &nbsp;&nbsp;
+                        <div class="col-md-12" > 
                             <div class="col-md-2">
-                                    <label>Product Images</label>
+                                    <label>Product Additional Images</label>
                             </div>
                             <div class="col-md-10">
                                     @if(!empty($additional_images))
@@ -238,7 +287,7 @@
 
 
 
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="margin-bottom: 0px">
                         <div class="form-group">
                                 <label class="control-label col-md-2"></label>
                                 <div class="col-lg-6 col-md-6">
@@ -254,9 +303,7 @@
                                             <div class="clone hide">
                                                 <div class="control-group input-group" style="margin-top:10px">
                                                     {!! Form::file('images[]',null,['class' => 'form-control form-cascade-control input-small','accept'=>'image/*'])  !!}
-                                                    <div class="input-group-btn">
-                                                    <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i></button>
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
 
@@ -268,13 +315,15 @@
         </div>
 
         &nbsp; &nbsp;
-        <div class="col-md-12">
+        <div class="col-md-8">
 
         <div class="form-group pull-right ">
-        {!! Form::submit(' Save ', ['class'=>'btn  btn-primary text-white','id'=>'saveBtn']) !!}
+        {!! Form::submit('Save & Continue', ['class'=>'btn  btn-primary text-white','id'=>'save_continue']) !!}
+            <input type="hidden" name="btn_name" id='btn_name' value="save_continue">
+           {!! Form::submit('Save & Publish ', ['class'=>'btn  btn-success text-white','id'=>'save_publish']) !!}
 
             <a href="{{route('product')}}">
-            {!! Form::button('Back', ['class'=>'btn btn-warning text-white']) !!} </a>
+            {!! Form::button('Back', ['class'=>'btn btn-warning text-white',]) !!} </a>
         </div>
     </div>
 

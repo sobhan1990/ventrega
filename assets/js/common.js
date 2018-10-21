@@ -1,3 +1,90 @@
+$(function(){ 
+
+    $('#save_continue').click(function(e){ 
+        var btn_name = (this.value);
+        $('#btn_name').val(btn_name);
+        $('#save_continue').submit();
+    });
+
+    var commission=0;
+    $('#product_category').on('change', function() {
+       commission = $('#'+this.value).val();
+       $('#commission').val(commission) ;
+       $('.commission').show();
+       
+    });
+    
+    // product title and meta title
+    $('input[name="product_title"]').keyup(function(){
+
+        $('input[name="meta_title"]').val(this.value);
+    });
+
+    $("input#store_price").keyup(function(){
+        
+        var commission_id =  $('#product_category option:selected').val();
+        var commission = $('#'+commission_id).val();
+        $('#commission').val(commission) ;
+        $('.commission').show('slow');
+        var store_price = this.value;
+        
+        var mrp = parseFloat(store_price)+(store_price*commission)/100;
+        $('#price').val(mrp.toFixed(2));
+        updateDiscount();
+
+    });
+
+    $('#discount_type').on('change', function() {
+        var discount_type =  $('#discount_type option:selected').val();
+        var store_price = $('#price').val();
+
+        if(discount_type=='fixed'){
+            var discount = $('#discount').val();
+
+        }else{
+            var discount = $('#discount').val();
+            discount = (store_price*discount)/100;
+        } 
+        var mrp = parseFloat(store_price)-discount;
+        $('#discount_price').val(mrp.toFixed(2));
+    });
+
+    $("input#discount").keyup(function(){
+        
+        var discount_type =  $('#discount_type option:selected').val();
+        var store_price = $('#price').val();
+
+        if(discount_type=='fixed'){
+            var discount = $('#discount').val();
+
+        }else{
+            var discount = $('#discount').val();
+            discount = (store_price*discount)/100;
+        } 
+
+        var mrp = parseFloat(store_price)-discount;
+        $('#discount_price').val(mrp.toFixed(2));
+
+    }); 
+});
+
+
+function updateDiscount(){
+    var discount_type =  $('#discount_type option:selected').val();
+    var store_price = $('#price').val();
+    
+    if(discount_type=='fixed'){
+        var discount = $('#discount').val();
+
+    }else{
+        var discount = $('#discount').val();
+        discount = (store_price*discount)/100;
+    } 
+    var mrp = parseFloat(store_price)-discount;
+    $('#discount_price').val(mrp.toFixed(2));
+}
+
+
 function popupAlert(url,id){
     bootbox.confirm({
     title: "Destroy default category?",
@@ -20,36 +107,33 @@ function popupAlert(url,id){
 });
 }
   
- 
 $(function(){ 
+
 $('#saveBtn').removeAttr('disabled');
 $('.legitRipple').removeAttr('disabled');
 
-/*
-Method : Delete particulare record
-@param : id,status
-Author : Kundan
-Description : delete particular record from dataBase
-*/
-$('button[name="remove_levels"]').on('click', function(e){
-//    bootbox.confirm('hello');
-   var self = $(this);   
-    var form = $(this).closest('form'); 
-    e.preventDefault(); 
-    
-   bootbox.confirm('<b><h3>Are you sure you want to delete?</h3></b>',function(result){
-  if(result)
-  {
-         var id = self.attr('id');
-         
-      $('#deleteForm_'+id).submit();
-  }   
-  
-   });
-});
-    
-
-
+    /*
+    Method : Delete particulare record
+    @param : id,status
+    Author : Kundan
+    Description : delete particular record from dataBase
+    */
+    $('button[name="remove_levels"]').on('click', function(e){
+    //    bootbox.confirm('hello');
+       var self = $(this);   
+        var form = $(this).closest('form'); 
+        e.preventDefault(); 
+        
+       bootbox.confirm('<b><h3>Are you sure you want to delete?</h3></b>',function(result){
+      if(result)
+      {
+             var id = self.attr('id');
+             
+          $('#deleteForm_'+id).submit();
+      }   
+      
+       });
+    }); 
 
 });
 
