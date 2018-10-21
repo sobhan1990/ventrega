@@ -9,7 +9,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title> {{ $setting->website_title or "Admin Login" }} </title>
+        <title> {{ $setting->website_title??"Admin Login" }} </title>
         <link rel="shortcut icon" type="image/png" href="{{ URL::asset('storage/uploads/img/'.$setting->website_logo ) }}" /> 
         
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
