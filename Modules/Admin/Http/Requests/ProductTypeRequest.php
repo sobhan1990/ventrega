@@ -28,8 +28,7 @@ class ProductTypeRequest extends FormRequest
                 case 'PUT':
                 case 'PATCH': {
                         return [
-                            'name'  => 'required|unique:product_types,name',
-
+                            'name'  => 'required',
                         ];
 
                 }

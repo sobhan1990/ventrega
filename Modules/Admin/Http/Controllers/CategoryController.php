@@ -75,18 +75,11 @@ class CategoryController extends Controller
                 }
             })->orderBy('id', 'DESC')->where('parent_id', 0)->Paginate($this->record_per_page);
         } else {
-            $categories = Category::with(['products'=> function($query) 
-                {
-                  //  $query->select('id','product_category',\DB::raw('SUM(price) AS total'))->groupBy('id')->first();
-                }])
-            ->orderBy('id', 'ASC')->where('parent_id', 0)
-           // ->get();
-            ->Paginate($this->record_per_page);
-        }
-        //dd($categories);
-
-       // dd($categories[0]->products()->sum('price')); 
-
+            $categories = Category::with('products')
+                            ->orderBy('id', 'ASC')
+                            ->where('parent_id', 0) 
+                            ->Paginate($this->record_per_page);
+        } 
 
         return view('admin::category.index', compact('categories', 'page_title', 'page_action'));
     }

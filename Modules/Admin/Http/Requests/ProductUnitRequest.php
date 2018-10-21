@@ -15,6 +15,7 @@ class ProductUnitRequest extends FormRequest
      */
     public function rules()
     {
+       
         switch ($this->method()) {
                 case 'GET':
                 case 'DELETE': {
@@ -26,11 +27,10 @@ class ProductUnitRequest extends FormRequest
                         ];
                     }
                 case 'PUT':
-                case 'PATCH': {
+                case 'PATCH': { 
                         return [
-                            'name'  => 'required|unique:product_units,name',
-
-                        ];
+                            'name'  => 'required',
+                        ]; 
 
                 }
                 default:break;
