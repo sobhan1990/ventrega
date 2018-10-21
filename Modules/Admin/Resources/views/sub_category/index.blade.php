@@ -45,6 +45,7 @@
 	                        <th> Category Name </th>
                           <th> Commission </th>
                           <th> Total Product Added </th>
+                           <th>Over All Commissions</th>
                           <th></th>
 	                        <th> Image </th>
 	                        <th>Created date</th>
@@ -62,6 +63,10 @@
                           <td> {{$result->commission??0}}% </td>
                           <td> {{$result->products->count()??0}}
                            </td>
+                            <td> {{
+                          money_format("%.2n",
+                         ($result->products->sum('store_price'))*($result->commission)/100).' INR' }} </td>
+
                            <td>
                              <a href="{{url(route('product').'?category_id='.$result->id.'&category='.$result->slug)}}" >View Products </a>
                            </td>

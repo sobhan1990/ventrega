@@ -48,8 +48,6 @@ class CategoryController extends Controller
 
     public function index(Category $category, Request $request)
     {
- 
-
         $page_title  = 'Category';
         $page_action = 'View Category';
 
@@ -77,8 +75,18 @@ class CategoryController extends Controller
                 }
             })->orderBy('id', 'DESC')->where('parent_id', 0)->Paginate($this->record_per_page);
         } else {
-            $categories = Category::with('products')->orderBy('id', 'ASC')->where('parent_id', 0)->Paginate($this->record_per_page);
+            $categories = Category::with(['products'=> function($query) 
+                {
+                  //  $query->select('id','product_category',\DB::raw('SUM(price) AS total'))->groupBy('id')->first();
+                }])
+            ->orderBy('id', 'ASC')->where('parent_id', 0)
+           // ->get();
+            ->Paginate($this->record_per_page);
         }
+        //dd($categories);
+
+       // dd($categories[0]->products()->sum('price')); 
+
 
         return view('admin::category.index', compact('categories', 'page_title', 'page_action'));
     }

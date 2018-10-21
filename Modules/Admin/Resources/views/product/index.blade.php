@@ -61,7 +61,7 @@
                             <th> Stock Price </th> 
                             <th> MRP </th>
                             <th> Discount </th> 
-                            <th> Discount Price </th>
+                            <th> Selling Price </th>
                             <th> Status</th>
                             <th> Created date</th>
                             <th> Action</th>
