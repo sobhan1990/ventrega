@@ -68,4 +68,8 @@ class Product extends Eloquent
     {
         return $this->belongsTo('Modules\Admin\Models\ProductType','product_type','id');
     }
+
+    public function vendorProduct(){
+       return $this->hasMany('Modules\Admin\Models\VendorProduct','product_id'); 
+    }
 }
