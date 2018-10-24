@@ -104,8 +104,19 @@ class ProductTypeController extends Controller
              'name'  => 'required|unique:product_units,name',  
         ]);
 
-        $producttype->name =  $request->get('name');
-        $producttype->status =  1;
+       $table_cname = \Schema::getColumnListing('producttype');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->get($value)){
+                    $productunit->$value = $request->get($value);
+               }
+        }
+ 
         $producttype->save();
 
         return Redirect::to(route('product-type'))
@@ -132,8 +143,19 @@ class ProductTypeController extends Controller
              'name'  => 'required|unique:product_units,name,'.$producttype->id,  
         ]);
 
-        $producttype->name    =  $request->get('name');
-        $producttype->status  =  1;
+         $table_cname = \Schema::getColumnListing('producttype');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->get($value)){
+                    $productunit->$value = $request->get($value);
+               }
+        }
+ 
         $producttype->save();
 
         return Redirect::to(route('product-type'))

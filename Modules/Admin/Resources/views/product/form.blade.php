@@ -151,6 +151,18 @@
                     </div>
 
 
+                    <div class="col-md-12">
+                        <div class="form-group {{ $errors->first('total_item', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                            <label class="control-label col-md-2">Total Item<span class="required"> * </span></label>
+                            <div class="col-md-6">
+                                {!! Form::number('total_item',null, ['class' => 'form-control','data-required'=>1,'id'=>'total_item','minlength'=>1,'min'=>1])  !!}
+
+                                <span class="help-block" style="color:red">{{ $errors->first('total_item', ':message') }}</span>
+                            </div>
+                        </div>
+                    </div> 
+
+
 
                     <div class="col-md-12">
                             <div class="form-group {{ $errors->first('description', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">

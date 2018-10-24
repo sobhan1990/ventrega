@@ -139,7 +139,8 @@ class SubCategoryController extends Controller {
         $category->category_image =  $main_category->category_image;
         $category->level          =  $main_category->level+1;
         $category->description    =  $request->get('description');
-        $category->commission    =  $main_category->commission;
+        $category->commission    =  $request->get('commission');
+
         $category->save();
 
         return Redirect::to(route('sub-category'))
@@ -153,15 +154,15 @@ class SubCategoryController extends Controller {
      * */
 
     public function edit(Category $category) {
-
-        $page_title = 'Category';
+        //$category = Category::with('parentCategory')->where('id',$category->id)->get();
+        $page_title  = 'Category';
         $page_action = 'Edit Sub category';
-        $categories = Category::where('parent_id',0)->get();
+        $categories  = Category::where('parent_id',0)->get();
         $url = url($category->sub_category_image) ;
 
         $sub_categories = Category::attr(['name' => 'category_name','class'=>'select-search'])
-                        ->selected($category->id)
-                        ->renderAsDropdown();
+                        ->selected($category->parent_id)
+                        ->renderAsDropdown(); 
 
         return view('admin::sub_category.edit', compact('sub_categories','categories','url','category', 'page_title', 'page_action'));
     }
@@ -187,7 +188,7 @@ class SubCategoryController extends Controller {
         $category->category_image   =  $main_category->category_image;
         $category->level            =  $main_category->level+1;
         $category->description      =  $request->get('description');
-        $category->commission       =  $main_category->commission;
+        $category->commission       =  $request->get('commission');
 
         $category->save();
 

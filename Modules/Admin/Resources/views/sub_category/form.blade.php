@@ -27,6 +27,18 @@
                 
         </div>
 
+          <div class="col-md-12">
+               
+                <div class="form-group {{ $errors->first('commission', ' has-error') }}">
+                    <label class="control-label col-md-2">Commission(%)<span class="required"> </span></label>
+                       <div class="col-lg-6">
+                        {!! Form::number('commission',null, ['class' => 'form-control ','data-required'=>1,'min'=>0])  !!} 
+                        
+                        <span class="help-block">{{ $errors->first('commission', ':message') }}</span>
+                    </div>
+                    </div>
+              </div>
+
          
             
         <div class="col-md-12">
