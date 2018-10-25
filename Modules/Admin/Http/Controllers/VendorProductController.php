@@ -61,6 +61,7 @@ class VendorProductController extends Controller
                 route('product')=>'View Products',
             ];
         View::share('submenu',   $submenu); 
+        View::share('js', true); 
     }
 
     /*

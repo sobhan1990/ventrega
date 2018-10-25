@@ -12,7 +12,19 @@
   <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/loaders/blockui.min.js')}}"></script>
   <!-- /core JS files -->
 
-  @if(isset($addProduct))
+  @if(isset($js))
+
+  <!-- Theme JS files -->
+  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
+  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/notifications/pnotify.min.js')}}"></script>
+  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/bootstrap_multiselect.js')}}"></script>
+
+  <script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js')}}"></script>
+  <script type="text/javascript" src="{{ URL::asset('assets/js/pages/form_multiselect.js')}}"></script>
+  <!-- /theme JS files -->
+
+
+  @else
 
   <!-- Theme JS files -->
   <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
@@ -87,16 +99,7 @@
   <script type="text/javascript" src="{{ URL::asset('assets/js/pages/form_multiselect.js')}}"></script>  
   <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/notifications/pnotify.min.js')}}"></script>  
 
-@else 
 
-  <!-- Theme JS files -->
-  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js')}}"></script>
-  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/notifications/pnotify.min.js')}}"></script>
-  <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/bootstrap_multiselect.js')}}"></script>
-
-  <script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js')}}"></script>
-  <script type="text/javascript" src="{{ URL::asset('assets/js/pages/form_multiselect.js')}}"></script>
-  <!-- /theme JS files -->
 @endif
   
 
