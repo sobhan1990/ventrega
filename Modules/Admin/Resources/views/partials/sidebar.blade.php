@@ -43,7 +43,7 @@
                 <ul class="hidden-ul" style="display: {{($viewPage=='Product')?'block':'none'}};">
                     <li><a href="{{route('category')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Store Category</a></li>  
                     <li><a href="{{route('sub-category')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Store Sub Category</a></li>  
-                    <li><a href="{{route('product-unit')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Product Units</a></li>
+                    <li><a href="{{route('product-unit')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Product Product Units</a></li>
                     <li><a href="{{route('product-type')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Store Product Types</a></li>
                     <li><a href="{{route('product')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> All Store Products</a></li>
                     <li><a href="{{route('product.create')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Add Store Products</a></li>
