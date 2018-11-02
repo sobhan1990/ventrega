@@ -30,8 +30,10 @@
                 <a href="#" class="has-ul legitRipple"><i class="icon-stack2"></i> <span>Manage Vendor </span>
                     <span class="legitRipple-ripple"></span></a>
                 <ul class="hidden-ul" style="display: {{($viewPage=='Vendor')?'block':'none'}};">
-                     <li><a href="{{route('vendor.create')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Add Vendor</a></li>
-                    <li><a href="{{route('vendor')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> All Vendors</a></li>  
+                     <li><a href="{{route('vendor')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> All Vendors</a></li> 
+                     <li><a href="{{route('vendor.create')}}" class="legitRipple"><span class=" icon-arrow-right13"></span> Add New Vendor</a></li>
+                    
+                    <li><a href="{{route('vendorProduct')}}?product=existing" class="legitRipple"><span class=" icon-arrow-right13"></span> Add Vendor product</a></li>  
                 </ul>
             </li>
 

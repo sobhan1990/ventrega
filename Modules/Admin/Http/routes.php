@@ -311,6 +311,27 @@ Route::group(['middleware' => 'web', 'prefix' => 'admin', 'namespace' => 'Module
                     ],
                 ]
             );
+        // product
+
+        Route::bind('vendorProduct', function ($value, $route) {
+            return Modules\Admin\Models\Product::find($value);
+        });
+
+        Route::resource(
+                'vendorProduct',
+                'VendorProductController',
+                [
+                    'names' => [
+                        'edit'      => 'vendorProduct.edit',
+                        'show'      => 'vendorProduct.show',
+                        'destroy'   => 'vendorProduct.destroy',
+                        'update'    => 'vendorProduct.update',
+                        'store'     => 'vendorProduct.store',
+                        'index'     => 'vendorProduct',
+                        'create'    => 'vendorProduct.create',
+                    ],
+                ]
+            );
         
         /*---------End---------*/
         // wensite settings

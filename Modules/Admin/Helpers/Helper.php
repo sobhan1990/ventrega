@@ -15,6 +15,9 @@ use Route;
 use View;
 use Session;
 use Hash; 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailerAutoload;
 
 class Helper
 { 
@@ -175,7 +178,7 @@ class Helper
         $cart_detail = $email_content['cart_detail'] ?? null;
 
         $mail       = new PHPMailer;
-        $html       = view::make('emails.' . $template, ['content' => $email_content,'billing' => $billing,'cart_detail' => $cart_detail]);
+        $html       = view::make('admin::emails.' . $template, ['content' => $email_content,'billing' => $billing,'cart_detail' => $cart_detail]);
         $html       = $html->render();
         $subject    = $email_content['subject'];
 
