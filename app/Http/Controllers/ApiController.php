@@ -40,7 +40,7 @@ class ApiController extends Controller
         if ($request->header('Content-Type') != "application/json")  {
             $request->headers->set('Content-Type', 'application/json');
         }
-        $user_id =  $request->input('user_id');
+        $user_id =  $request->input('userId');
     } 
     // deactive user
     public function deactivateUser($user_id=null)
@@ -73,75 +73,82 @@ class ApiController extends Controller
             );
     }
 
-   /* @method : register
+   /**
+    * @method : register
     * @param : email,password,deviceID,firstName,lastName
-    * Response : json
+    * @Response : json
     * Return : token and user details
     * Author : kundan Roy
-    * Calling Method : get  
+    * Calling Method : post  
     */
-
     public function register(Request $request,User $user)
     {   
-        $input['first_name']    = $request->input('first_name');
-        $input['last_name']     = $request->input('last_name'); 
-        $input['email']         = $request->input('email'); 
-        $input['password']      = Hash::make($request->input('password'));
-        $input['role_type']     = 3;
-        $input['user_type']     = $request->input('user_type');
-        $input['provider_id']   = $request->input('provider_id'); 
-
-        $user = User::firstOrNew(['provider_id'=>$request->input('provider_id'),'email'=>$request->input('email')]);
-       
-        if($request->input('user_id')){
-            $u = $this->updateProfile($request,$user);
-            return $u;
-        } 
-
-        if($input['user_type']=='google' || $input['user_type']=='facebook'){
+        // social media
+        $authType  = $request->get('authType'); 
+        // auth type
+        if($authType=='google' || $authType=='facebook' || $authType=='twitter' || $authType=='linkedin'){
                 //Server side valiation
                 $validator = Validator::make($request->all(), [
-                   'first_name' => 'required',
-                   'email' => 'required'
+                   'firstName' =>  'required',
+                   'email'      =>  'required',
+                   'providerId' =>  'required',
+                   'loginType'  =>  'required',
+                   'authType'   =>  'required'
                 ]);
 
         }else{
             //Server side valiation
             $validator = Validator::make($request->all(), [
-               'first_name' => 'required',
-               'email' => 'required|email|unique:users',
-               'password' => 'required'
+               'firstName' => 'required',
+               'email'      => 'required|email|unique:users',
+               'password'   => 'required',
+               'loginType'  => 'required',
             ]);
         }
 
-
         /** Return Error Message **/
         if ($validator->fails()) {
-            $error_msg      =   [];
+            $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
                         array_push($error_msg, $value);     
                     }
                     
             return Response::json(array(
                 'status' => 0,
-                'code'=>500,
+                'code'=>201,
                 'message' => $error_msg[0],
                 'data'  =>  $request->all()
                 )
             );
         } 
 
+
+        $loginType  = $request->get('loginType');
+        $role       = Config::get('role');
+        $roleType   = (object)array_flip($role);
+
+        $input['first_name']    = $request->get('firstName');
+        $input['last_name']     = $request->get('lastName'); 
+        $input['email']         = $request->get('email');
+        $input['username']      = $request->get('username');
+        $input['password']      = Hash::make($request->get('password'));
+        $input['role_type']     = $roleType->$loginType;
+        $input['user_type']     = $request->get('authType'); // social media
+        $input['provider_id']   = $request->get('providerId'); 
+
+
         
         $helper = new Helper;
-        /** --Create USER-- **/
+        /** --Create user-- **/
         $user = User::create($input); 
 
         $subject = "Welcome to ventrega! Verify your email address to get started";
         $email_content = [
-                'receipent_email'=> $request->input('email'),
+                'receipent_email'=> $request->get('email'),
                 'subject'=>$subject,
-                'greeting'=> 'ventrega',
-                'first_name'=> $request->input('first_name')
+                'greeting'=> 'Ventrega',
+                'first_name'=> $request->get('firstName'),
+                'first_name'=> $request->get('firstName')
                 ];
 
         $verification_email = $helper->sendMailFrontEnd($email_content,'verification_link');
@@ -153,10 +160,10 @@ class ApiController extends Controller
        
         return response()->json(
                             [ 
-                                "status"=>1,
-                                "code"=>200,
-                                "message"=>"Thank you for registration.Verify your email address to get started",
-                                'data'=>$user
+                                "status"    =>  1,
+                                "code"      =>  200,
+                                "message"   =>  "Thank you for registration.Verify your email address to get started",
+                                'data'      => $request->all()
                             ]
                         );
     }
@@ -185,21 +192,18 @@ class ApiController extends Controller
         }
         
     }
-public function userDetail($id=null)
-{
-    $user = User::find($id);
+    public function userDetail($id=null)
+    {
+        $user = User::find($id); 
+        return Response::json(array(
+                    'status' => ($user)?1:0,
+                    'code' => ($user)?200:404,
+                    'message' => ($user)?'User data fetched.':'Record not found!',
+                    'data'  =>  $user
+                    )
+                ); 
 
-    //$review = \DB::table('reviews')->where('')
-
-    return Response::json(array(
-                'status' => ($user)?1:0,
-                'code' => ($user)?200:500,
-                'message' => ($user)?'User data fetched.':'Record not found!',
-                'data'  =>  $user
-                )
-            ); 
-
-}
+    }
 
 /* @method : update User Profile
     * @param : email,password,deviceID,firstName,lastName
@@ -251,7 +255,6 @@ public function userDetail($id=null)
             }
             $user->profile_image  = $profile_image;       
         }        
-           
 
         try{
             $user->save();
@@ -308,13 +311,14 @@ public function userDetail($id=null)
     public function login(Request $request)
     {    
         $input = $request->all(); 
-        $user_type = $request->get('user_type');
+        $user_type = $request->get('authType');
         // Validation
         $validateInput['email'] = 'required|email';
         $v = $this->validateInput($request,$validateInput);
  
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'deviceDetails'=> 'required'
         ]);
          
         /** Return Error Message **/
@@ -326,39 +330,54 @@ public function userDetail($id=null)
             if($error_msg){
                return array(
                     'status' => 0,
-                    'code' => 500,
+                    'code' => 201,
                     'message' => $error_msg[0],
                     'data'  =>  $request->all()
                     );
             }
-
         }
- 
+        
         switch ($user_type) {
             case 'facebook':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('provider_id')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
                 break;
             case 'google':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('provider_id')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                break;
+            case 'twitter':
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                break;
+            case 'linkedin':
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
                 break;
             
             default:
                 $token = JWTAuth::attempt(
-                            [
+                            [   'status'=>1,
                                 'email'=>$request->get('email'),
                                 'password'=>$request->get('password'),
-                                'status'=>1
+                                
                             ]); 
                 break;
         }
 
-
         if (!$token) {
-            return response()->json([ "status"=>0,"code"=>500,"message"=>"Invalid email or password. Try again!" ,'data' => $input ]);
+            return response()->json([ "status"=>0,"code"=>201,"message"=>"Invalid email or password!" ,'data' => $input ]);
         }
         $user = JWTAuth::toUser($token);
+
+        try{
+            $user->deviceDetails = json_encode($request->get('deviceDetails'));
+            $user->save();
+            \DB::table('login_logs')->insert(['user_id'=>$user->id,'deviceDetails'=>$user->deviceDetails]);
+
+            $data = ['userId'=>$user->id,'firstName'=>$user->first_name,'email'=>$user->email];
         
-        return response()->json([ "status"=>1,"code"=>200,"code"=>200,"message"=>"Successfully logged in." ,'data' => $user,'token'=>$token ]);
+            return response()->json([ "status"=>1,"code"=>200,"code"=>200,"message"=>"Successfully logged in." ,'data' => $data,'token'=>$token ]);
+
+        } catch (DecryptException $e) { 
+            return response()->json([ "status"=>0,"code"=>401,"message"=>$e->getMessage(),'data' => []]);
+        }
 
     } 
    /* @method : get user details

@@ -12,8 +12,10 @@ use App\User;
 use Hash;
 use Input;
 use Mail;
-use PHPMailer;
 use View;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailerAutoload;
 
 class Helper
 {
