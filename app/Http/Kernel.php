@@ -43,13 +43,11 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
-        'api' => [
+       'api' => [
             'throttle:60,1',
             'bindings',
-            'restApiAuth:api',
         ],
     ];
-
     /**
      * The application's route middleware.
      *
@@ -58,14 +56,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'           => \App\Http\Middleware\Authenticate::class,
-        'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'can'            => \Illuminate\Foundation\Http\Middleware\Authorize::class,
-        'guest'          => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle'       => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin'          => \App\Http\Middleware\RedirectIfNotAdmin::class,
+        'jwt-auth'       => \App\Http\Middleware\authJWT::class,
         'api'            => \App\Http\Middleware\ApiMiddleware::class,
-        'restApiAuth'    => \App\Http\Middleware\ApiMiddleware::class, 
-
     ];
 }

@@ -1,7 +1,9 @@
 <?php
 
 return [
-    1=>'Admin',
-    2=>'Vendor',
-    3=>'App User'
+    1=>'admin',
+    2=>'vendor',
+    3=>'customer',
+    4=>'delieveryBoy',
+    5=>'employee' 
 ];
