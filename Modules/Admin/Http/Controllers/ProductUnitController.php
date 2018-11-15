@@ -109,8 +109,19 @@ class ProductUnitController extends Controller
              'name'  => 'required|unique:product_units,name',  
         ]);
 
-        $productunit->name =  $request->get('name');
-        $productunit->status =  1;
+        $table_cname = \Schema::getColumnListing('product_units');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->get($value)){
+                    $productunit->$value = $request->get($value);
+               }
+        }
+
         $productunit->save();
 
         return Redirect::to(route('product-unit'))
@@ -138,8 +149,19 @@ class ProductUnitController extends Controller
              'name'  => 'required|unique:product_units,name,'.$productunit->id,  
         ]);
 
-        $productunit->name        =  $request->get('name');
-        $productunit->status      =  1;
+        $table_cname = \Schema::getColumnListing('product_units');
+            $except = ['id','created_at','updated_at','deleted_at'];
+            
+            foreach ($table_cname as $key => $value) {
+               
+               if(in_array($value, $except )){
+                    continue;
+               } 
+               if($request->get($value)){
+                    $productunit->$value = $request->get($value);
+               }
+        }
+
         $productunit->save();
 
         return Redirect::to(route('product-unit'))

@@ -128,27 +128,39 @@
 
 
                     <div class="col-md-12">
-                        <div class="form-group {{ $errors->first('pro_type', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                        <div class="form-group {{ $errors->first('product_type', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                             <label class="control-label col-md-2">Product Type <span class="required"> * </span></label>
                             <div class="col-md-6">
 
-                                {!! Form::select( 'pro_type', $producttypes,$product->product_type,['class' => 'form-control form-cascade-control','placeholder'=>'select product packet type'])  !!}
+                                {!! Form::select( 'product_type', $producttypes,$product->product_type,['class' => 'form-control form-cascade-control','placeholder'=>'select product packet type'])  !!}
 
-                                <span class="help-block" style="color:red">{{ $errors->first('pro_type', ':message') }}</span>
+                                <span class="help-block" style="color:red">{{ $errors->first('product_type', ':message') }}</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-12">
-                            <div class="form-group {{ $errors->first('pro_unit', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                            <div class="form-group {{ $errors->first('unit', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
                                 <label class="control-label col-md-2">Unit Description <span class="required"> * </span></label>
                                 <div class="col-md-6">
-                                    {!! Form::select('pro_unit',$productunits,$product->unit,['class' => 'form-control form-cascade-control','placeholder'=>'select product unit'])  !!}
+                                    {!! Form::select('unit',$productunits,$product->unit,['class' => 'form-control form-cascade-control','placeholder'=>'select product unit'])  !!}
 
-                                    <span class="help-block" style="color:red">{{ $errors->first('pro_unit', ':message') }}</span>
+                                    <span class="help-block" style="color:red">{{ $errors->first('unit', ':message') }}</span>
                                 </div>
                             </div>
                     </div>
+
+
+                    <div class="col-md-12">
+                        <div class="form-group {{ $errors->first('total_item', ' has-error') }}  @if(session('field_errors')) {{ 'has-error' }} @endif">
+                            <label class="control-label col-md-2">Total Item<span class="required"> * </span></label>
+                            <div class="col-md-6">
+                                {!! Form::number('total_item',null, ['class' => 'form-control','data-required'=>1,'id'=>'total_item','minlength'=>1,'min'=>1])  !!}
+
+                                <span class="help-block" style="color:red">{{ $errors->first('total_item', ':message') }}</span>
+                            </div>
+                        </div>
+                    </div> 
 
 
 

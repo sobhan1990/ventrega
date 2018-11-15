@@ -13,6 +13,10 @@
                     <div class="heading-elements">
                       <ul class="icons-list">
                         <li> <a type="button" href="{{route('vendor.create')}}" class="btn btn-primary text-white btn-labeled btn-rounded "><b><i class="icon-plus3"></i></b> Add {{$page_title }}<span class="legitRipple-ripple" ></span></a></li> 
+                         <li> <a type="button" href="{{route('vendorProduct.create')}}" class="btn btn-primary text-white btn-labeled btn-rounded "><b><i class="icon-plus3"></i></b> Add New Product<span class="legitRipple-ripple" ></span></a></li> 
+
+                          <li> <a type="button" href="{{route('vendorProduct.create')}}?product=existing" class="btn btn-primary text-white btn-labeled btn-rounded "><b><i class="icon-plus3"></i></b> Add existing Product<span class="legitRipple-ripple" ></span></a></li>
+
                       </ul>
                     </div>
                   </div> 
@@ -53,6 +57,8 @@
                           <th> Shop Name </th>
 	                        <th> Email </th> 
 	                        <th> Mobile</th>
+                          <th> Pincode</th>
+                          <th></th>
 	                        <th>Created date</th> 
 	                        <th>Action</th> 
 	                    </tr>
@@ -65,6 +71,10 @@
 	                        <td> {{$result->shop_name}} </td>
 	                        <td> {{$result->email}} </td>
 	                        <td> {{$result->mobile}} </td>
+                          <td> {{$result->pincode}} </td>
+                           <td>  
+                            <a href="{{url('admin/vendorProduct?vendor_id='.$result->id)}}">
+                           Show Products  </a> </td>
 	                         
                              <td>
 	                                {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}

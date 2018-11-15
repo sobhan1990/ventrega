@@ -26,7 +26,7 @@ class VendorController extends Controller
     /**
      * @var  Repository
      */
-
+    public $helper;
     /**
      * Displays all admin.
      *
@@ -48,6 +48,9 @@ class VendorController extends Controller
         $this->createMessage = 'Record created successfully.';
         $this->updateMessage = 'Record updated successfully.';
         $this->deleteMessage =  'Record deleted successfully.';
+
+        $this->helper = new Helper; 
+
     }
 
     protected $users;
@@ -111,7 +114,8 @@ class VendorController extends Controller
         $page_action =  str_replace('.',' ', ucfirst(Route::currentRouteName()));
         $roles       = config('role');
         $role_id     = 2;
-         
+
+
         return view($this->createUrl, compact('role_id', 'roles', 'vendor', 'page_title', 'page_action'));
     }
 
@@ -160,6 +164,25 @@ class VendorController extends Controller
             }
 
             \DB::commit();
+
+            try {
+
+                $email_content['first_name'] =  $request->get('first_name');
+                $email_content['email'] = $request->get('email');
+                $email_content['message'] = "<br>Thank yor for choosing ventrega.<br>Your temprary username and password is :<br><br>
+                                <b> Username:</b>". $request->get('email') ."<br>
+                                <b>Password:</b>". $request->get('first_name') ."</br>";
+                $email_content['greeting'] = "Team Ventrega";
+                $email_content['subject'] = "Welcome to Ventrega!";
+                $email_content['receipent_email'] = $request->get('email');
+
+            $this->helper->sendMail($email_content, 'welcome');
+
+            }catch(\Exception $e){
+                //
+            }
+            
+
         } catch (\Exception $e) { 
             \DB::rollback();  
         } 
