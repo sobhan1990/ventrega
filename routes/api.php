@@ -59,7 +59,7 @@ Route::group([
 
         Route::group(['middleware' => 'jwt-auth'], function () 
         { 
-          Route::match(['post','get'],'testing',function(){
+         	Route::match(['post','get'],'testing',function(){
             	die('test');
             }); 
           

@@ -1122,7 +1122,7 @@ class ApiController extends Controller
         return response()->json(
                         [
                             "status"    =>  count($data)?1:0,
-                            'code'      =>  count($data)?200:500,
+                            'code'      =>  count($data)?200:401,
                             "message"   =>  count($data)?"Otp generated":"Something went wrong",
                             'data'      =>  $data
                         ]

@@ -21,8 +21,8 @@ class VerifyCsrfToken extends BaseVerifier
 
     protected function excludedRoutes($request)
     {
-        $path_info_url = $request->getpathinfo();
-        dd(1);
+        $path_info_url = $request->getpathinfo(); 
+        
         if (strpos($path_info_url, 'api/v1') !== false) {
             $path_info_url  = $path_info_url;
         }
