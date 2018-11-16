@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\DecryptException;
-use Config,Mail,View,Redirect,Validator,Response; 
-use Auth,Crypt,Hash,Lang,JWTAuth,Input,Closure,URL; 
-use JWTExceptionTokenInvalidException; 
+use Config,Mail,View,Redirect,Validator,Response;
+use Auth,Crypt,Hash,Lang,JWTAuth,Input,Closure,URL;
+use JWTExceptionTokenInvalidException;
 use App\Helpers\Helper as Helper;
 use Modules\Admin\Models\User;
 use Modules\Admin\Models\Category;
 use App\Models\Notification;
-use App\Http\Requests\UserRequest;  
-use Illuminate\Http\Dispatcher;   
-use Cookie; 
+use App\Http\Requests\UserRequest;
+use Illuminate\Http\Dispatcher;
+use Cookie;
 
 class ApiController extends Controller
 {
@@ -28,7 +28,7 @@ class ApiController extends Controller
     * Response : json
     * Return : token and user details
     * Author : kundan Roy
-    * Calling Method : get  
+    * Calling Method : get
     */
 
     public    $sid      = "";
@@ -41,7 +41,7 @@ class ApiController extends Controller
             $request->headers->set('Content-Type', 'application/json');
         }
         $user_id =  $request->input('userId');
-    } 
+    }
     // deactive user
     public function deactivateUser($user_id=null)
     {
@@ -50,9 +50,9 @@ class ApiController extends Controller
         if (!$user) {
                     $error_msg  =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
-                    
+
             return Response::json(array(
                 'status' => 0,
                 'code'=>500,
@@ -60,7 +60,7 @@ class ApiController extends Controller
                 'data'  =>  $request->all()
                 )
             );
-        }   
+        }
          $user->status=0;
          $user->save();
 
@@ -79,12 +79,12 @@ class ApiController extends Controller
     * @Response : json
     * Return : token and user details
     * Author : kundan Roy
-    * Calling Method : post  
+    * Calling Method : post
     */
     public function register(Request $request,User $user)
-    {   
+    {
         // social media
-        $authType  = $request->get('authType'); 
+        $authType  = $request->get('authType');
         // auth type
         if($authType=='google' || $authType=='facebook' || $authType=='twitter' || $authType=='linkedin'){
                 //Server side valiation
@@ -110,9 +110,9 @@ class ApiController extends Controller
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
-                    
+
             return Response::json(array(
                 'status' => 0,
                 'code'=>201,
@@ -120,7 +120,7 @@ class ApiController extends Controller
                 'data'  =>  $request->all()
                 )
             );
-        } 
+        }
 
 
         $loginType  = $request->get('loginType');
@@ -128,19 +128,19 @@ class ApiController extends Controller
         $roleType   = (object)array_flip($role);
 
         $input['first_name']    = $request->get('firstName');
-        $input['last_name']     = $request->get('lastName'); 
+        $input['last_name']     = $request->get('lastName');
         $input['email']         = $request->get('email');
         $input['username']      = $request->get('username');
         $input['password']      = Hash::make($request->get('password'));
         $input['role_type']     = $roleType->$loginType;
         $input['user_type']     = $request->get('authType'); // social media
-        $input['provider_id']   = $request->get('providerId'); 
+        $input['provider_id']   = $request->get('providerId');
 
 
-        
+
         $helper = new Helper;
         /** --Create user-- **/
-        $user = User::create($input); 
+        $user = User::create($input);
 
         $subject = "Welcome to ventrega! Verify your email address to get started";
         $email_content = [
@@ -152,14 +152,14 @@ class ApiController extends Controller
                 ];
 
         $verification_email = $helper->sendMailFrontEnd($email_content,'verification_link');
-        
+
         //dd($verification_email);
 
         $notification = new Notification;
         $notification->addNotification('user_register',$user->id,$user->id,'User register','');
-       
+
         return response()->json(
-                            [ 
+                            [
                                 "status"    =>  1,
                                 "code"      =>  200,
                                 "message"   =>  "Thank you for registration.Verify your email address to get started",
@@ -176,32 +176,32 @@ class ApiController extends Controller
                 $image = base64_decode($img[1]);
                 $image_name= time().'.jpg';
                 $path = storage_path() . "/image/" . $image_name;
-              
-                file_put_contents($path, $image); 
+
+                file_put_contents($path, $image);
                 return url::to(asset('storage/image/'.$image_name));
             }else{
                 if(starts_with($base64,'http')){
                     return $base64;
                 }
-                return false; 
+                return false;
             }
 
-            
+
         }catch(Exception $e){
             return false;
         }
-        
+
     }
     public function userDetail($id=null)
     {
-        $user = User::find($id); 
+        $user = User::find($id);
         return Response::json(array(
                     'status' => ($user)?1:0,
                     'code' => ($user)?200:404,
                     'message' => ($user)?'User data fetched.':'Record not found!',
                     'data'  =>  $user
                     )
-                ); 
+        );
 
     }
 
@@ -210,11 +210,11 @@ class ApiController extends Controller
     * Response : json
     * Return : token and user details
     * Author : kundan Roy
-    * Calling Method : get  
+    * Calling Method : get
     */
     public function updateProfile(Request $request,$userId)
-    {      
-        $user = User::find($userId);  
+    {
+        $user = User::find($userId);
         if((User::find($userId))==null)
         {
             return Response::json(array(
@@ -224,26 +224,27 @@ class ApiController extends Controller
                 'data'  =>  ''
                 )
             );
-        } 
-         
+        }
+
         $table_cname = \Schema::getColumnListing('users');
+
         $except = ['id','created_at','updated_at','profile_image','modeOfreach'];
-        
+
         foreach ($table_cname as $key => $value) {
-           
+
            if(in_array($value, $except )){
                 continue;
-           } 
+           }
             if($request->get($value)){
                 $user->$value = $request->get($value);
-           }
+            }
         }
         if(count($request->get('modeOfreach'))>0){
-       		$user->modeOfreach = json_encode($request->get('modeOfreach')); 	
+       		$user->modeOfreach = json_encode($request->get('modeOfreach'));
         }
-        
-        if($request->get('profile_image')){ 
-            $profile_image = $this->createImage($request->get('profile_image')); 
+
+        if($request->get('profile_image')){
+            $profile_image = $this->createImage($request->get('profile_image'));
             if($profile_image==false){
                 return Response::json(array(
                     'status' => 0,
@@ -253,8 +254,8 @@ class ApiController extends Controller
                     )
                 );
             }
-            $user->profile_image  = $profile_image;       
-        }        
+            $user->profile_image  = $profile_image;
+        }
 
         try{
             $user->save();
@@ -266,28 +267,28 @@ class ApiController extends Controller
             $code  = 500;
             $message =$e->getMessage();
         }
-         
+
         return response()->json(
-                            [ 
+                            [
                             "status" =>$status,
                             'code'   => $code,
                             "message"=> $message,
                             'data'=>isset($user)?$user:[]
                             ]
                         );
-         
+
     }
     // Validate user
     public function validateInput($request,$input){
-        //Server side valiation 
+        //Server side valiation
 
         $validator = Validator::make($request->all(), $input);
-         
+
         /** Return Error Message **/
         if ($validator->fails()) {
             $error_msg      =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
 
             if($error_msg){
@@ -306,26 +307,26 @@ class ApiController extends Controller
     * @param : email,password and deviceID
     * Response : json
     * Return : token and user details
-    * Author : kundan Roy   
+    * Author : kundan Roy
     */
     public function login(Request $request)
-    {    
-        $input = $request->all(); 
+    {
+        $input = $request->all();
         $user_type = $request->get('authType');
         // Validation
         $validateInput['email'] = 'required|email';
         $v = $this->validateInput($request,$validateInput);
- 
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'deviceDetails'=> 'required'
         ]);
-         
+
         /** Return Error Message **/
         if ($validator->fails()) {
             $error_msg      =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
             if($error_msg){
                return array(
@@ -336,28 +337,28 @@ class ApiController extends Controller
                     );
             }
         }
-        
+
         switch ($user_type) {
             case 'facebook':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]);
                 break;
             case 'google':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]);
                 break;
             case 'twitter':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]);
                 break;
             case 'linkedin':
-                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]); 
+                $token = JWTAuth::attempt(['email'=>$request->get('email'),'provider_id'=>$request->get('providerId')]);
                 break;
-            
+
             default:
                 $token = JWTAuth::attempt(
                             [   'status'=>1,
                                 'email'=>$request->get('email'),
                                 'password'=>$request->get('password'),
-                                
-                            ]); 
+
+                            ]);
                 break;
         }
 
@@ -372,38 +373,38 @@ class ApiController extends Controller
             \DB::table('login_logs')->insert(['user_id'=>$user->id,'deviceDetails'=>$user->deviceDetails]);
 
             $data = ['userId'=>$user->id,'firstName'=>$user->first_name,'email'=>$user->email];
-        
+
             return response()->json([ "status"=>1,"code"=>200,"code"=>200,"message"=>"Successfully logged in." ,'data' => $data,'token'=>$token ]);
 
-        } catch (DecryptException $e) { 
+        } catch (DecryptException $e) {
             return response()->json([ "status"=>0,"code"=>401,"message"=>$e->getMessage(),'data' => []]);
         }
 
-    } 
+    }
    /* @method : get user details
     * @param : Token and deviceID
     * Response : json
-    * Return : User details 
+    * Return : User details
    */
-   
+
     public function getUserDetails(Request $request)
     {
         $user = JWTAuth::toUser($request->input('token'));
-        
+
         return response()->json(
                 [ "status"=>1,
                   "code"=>200,
                   "message"=>"success." ,
-                  "data" => $user 
+                  "data" => $user
                 ]
-            ); 
+            );
     }
    /* @method : Email Verification
     * @param : token_id
     * Response : json
-    * Return :token and email 
+    * Return :token and email
    */
-   
+
     public function emailVerification(Request $request)
     {
         $verification_code = ($request->input('verification_code'));
@@ -413,31 +414,31 @@ class ApiController extends Controller
            $user = User::where('email',$email)->get()->count();
            if($user>0)
            {
-              User::where('email',$email)->update(['status'=>1]);  
+              User::where('email',$email)->update(['status'=>1]);
            }else{
             echo "Verification link is Invalid or expire!"; exit();
                 return response()->json([ "status"=>0,"message"=>"Verification link is Invalid!" ,'data' => '']);
            }
-           echo "Email verified successfully."; exit();  
+           echo "Email verified successfully."; exit();
            return response()->json([ "status"=>1,"message"=>"Email verified successfully." ,'data' => '']);
         }else{
             echo "Verification link is Invalid!"; exit();
             return response()->json([ "status"=>0,"message"=>"Verification link is invalid!" ,'data' => '']);
         }
     }
-   
+
    /* @method : logout
     * @param : token
     * Response : "logout message"
-    * Return : json response 
+    * Return : json response
    */
     public function logout(Request $request)
-    {   
+    {
         $token = $request->input('token');
-         
+
         JWTAuth::invalidate($request->input('token'));
 
-        return  response()->json([ 
+        return  response()->json([
                     "status"=>1,
                     "code"=> 200,
                     "message"=>"You've successfully signed out.",
@@ -448,10 +449,10 @@ class ApiController extends Controller
    /* @method : forget password
     * @param : token,email
     * Response : json
-    * Return : json response 
+    * Return : json response
     */
     public function forgetPassword(Request $request)
-    {  
+    {
         $email = $request->input('email');
         //Server side valiation
         $validator = Validator::make($request->all(), [
@@ -459,13 +460,13 @@ class ApiController extends Controller
         ]);
 
         $helper = new Helper;
-       
+
         if ($validator->fails()) {
             $error_msg  =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
-                            
+
             return Response::json(array(
                 'status' => 0,
                 'message' => $error_msg[0],
@@ -487,10 +488,10 @@ class ApiController extends Controller
         }
         $user_data = User::find($user->id);
         $temp_password = Hash::make($email);
-        
+
       // Send Mail after forget password
         $temp_password =  Hash::make($email);
-       
+
         $email_content = array(
                         'receipent_email'   => $request->input('email'),
                         'subject'           => 'Your Yellotasker Account Password',
@@ -504,10 +505,10 @@ class ApiController extends Controller
         $email_response = $helper->sendMail(
                                 $email_content,
                                 'forgot_password_link'
-                            ); 
-       
+                            );
+
        return   response()->json(
-                    [ 
+                    [
                         "status"=>1,
                         "code"=> 200,
                         "message"=>"Reset password link has sent. Please check your email.",
@@ -518,19 +519,19 @@ class ApiController extends Controller
 
 
     public function resetPassword(Request $request)
-    { 
-        $encryptedValue = $request->get('key')?$request->get('key'):''; 
+    {
+        $encryptedValue = $request->get('key')?$request->get('key'):'';
         $method_name = $request->method();
         $token = $request->get('token');
        // $email = ($request->get('email'))?$request->get('email'):'';
-        
+
         if($method_name=='GET')
-        {    
+        {
             try {
-                $email = Crypt::decrypt($encryptedValue); 
-                
+                $email = Crypt::decrypt($encryptedValue);
+
                 if (Hash::check($email, $token)) {
-                    return view('admin.auth.passwords.reset',compact('token','email')); 
+                    return view('admin.auth.passwords.reset',compact('token','email'));
                 }else{
 
                     return Response::json(array(
@@ -539,12 +540,12 @@ class ApiController extends Controller
                         'data'  =>  ''
                         )
                     );
-                } 
-                
+                }
+
             } catch (DecryptException $e) {
-                   
-            //   return view('admin.auth.passwords.reset',compact('token','email')) 
-              //              ->withErrors(['message'=>'Invalid reset password link!']);  
+
+            //   return view('admin.auth.passwords.reset',compact('token','email'))
+              //              ->withErrors(['message'=>'Invalid reset password link!']);
 
                 return Response::json(array(
                         'status' => 0,
@@ -553,16 +554,16 @@ class ApiController extends Controller
                         )
                     );
             }
-            
+
         }else
-        {   
+        {
             try {
-                $email = Crypt::decrypt($encryptedValue); 
-                
+                $email = Crypt::decrypt($encryptedValue);
+
                 if (Hash::check($email, $token)) {
                         $password =  Hash::make($request->get('password'));
                         $user = User::where('email',$email)->update(['password'=>$password]);
-                        
+
                         return Response::json(array(
                                 'status' => 1,
                                 'message' => "Password reset successfully.",
@@ -577,10 +578,10 @@ class ApiController extends Controller
                         'data'  =>  ''
                         )
                     );
-                } 
-                
+                }
+
             } catch (DecryptException $e) {
-                   
+
                 return Response::json(array(
                         'status' => 0,
                         'message' => "Invalid reset password link!",
@@ -594,11 +595,11 @@ class ApiController extends Controller
    /* @method : change password
     * @param : token,oldpassword, newpassword
     * Response : "message"
-    * Return : json response 
+    * Return : json response
    */
     public function changePassword(Request $request)
-    {   
-        
+    {
+
         $email = $request->input('email');
         //Server side valiation
         $validator = Validator::make($request->all(), [
@@ -606,13 +607,13 @@ class ApiController extends Controller
         ]);
 
         $helper = new Helper;
-       
+
         if ($validator->fails()) {
             $error_msg  =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
-                            
+
             return Response::json(array(
                 'status' => 0,
                 "code" => 201,
@@ -635,10 +636,10 @@ class ApiController extends Controller
         }
 
         $user = User::where('email',$request->get('email'))->first();
-        
-        $user_id = $user->id; 
+
+        $user_id = $user->id;
         $old_password = $user->password;
-     
+
         $validator = Validator::make($request->all(), [
             'oldPassword' => 'required',
             'newPassword' => 'required|min:6'
@@ -647,9 +648,9 @@ class ApiController extends Controller
         if ($validator->fails()) {
             $error_msg  =   [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);     
+                        array_push($error_msg, $value);
                     }
-                            
+
             return Response::json(array(
                 'status' => 0,
                 'message' => $error_msg[0],
@@ -657,13 +658,13 @@ class ApiController extends Controller
                 )
             );
         }
-         
+
         if (Hash::check($request->input('oldPassword'),$old_password)) {
 
            $user_data =  User::find($user_id);
            $user_data->password =  Hash::make($request->input('newPassword'));
            $user_data->save();
-           return  response()->json([ 
+           return  response()->json([
                     "status"=>1,
                     "code"=> 200,
                     "message"=>"Password changed successfully.",
@@ -679,9 +680,9 @@ class ApiController extends Controller
                 'data'  =>  []
                 )
             );
-        }         
+        }
     }
- 
+
     /*SORTING*/
     public function array_msort($array, $cols)
     {
@@ -707,35 +708,35 @@ class ApiController extends Controller
         return $ret;
 
     }
-   
-  
+
+
     public function InviteUser(Request $request,InviteUser $inviteUser)
-    {   
-        $user =   $inviteUser->fill($request->all()); 
-       
-        $user_id = $request->input('userID'); 
-        $invited_user = User::find($user_id); 
-        
+    {
+        $user =   $inviteUser->fill($request->all());
+
+        $user_id = $request->input('userID');
+        $invited_user = User::find($user_id);
+
         $user_first_name = $invited_user->first_name ;
         $download_link = "http://google.com";
         $user_email = $request->input('email');
 
         $helper = new Helper;
         $cUrl =$helper->getCompanyUrl($user_email);
-        $user->company_url = $cUrl; 
+        $user->company_url = $cUrl;
         /** --Send Mail after Sign Up-- **/
-        
-        $user_data     = User::find($user_id); 
+
+        $user_data     = User::find($user_id);
         $sender_name     = $user_data->first_name;
         $invited_by    = $invited_user->first_name.' '.$invited_user->last_name;
         $receipent_name = "User";
-        $subject       = ucfirst($sender_name)." has invited you to join";   
+        $subject       = ucfirst($sender_name)." has invited you to join";
         $email_content = array('receipent_email'=> $user_email,'subject'=>$subject,'name'=>'User','invite_by'=>$invited_by,'receipent_name'=>ucwords($receipent_name));
         $helper = new Helper;
         $invite_notification_mail = $helper->sendNotificationMail($email_content,'invite_notification_mail',['name'=> 'User']);
         $user->save();
 
-        return  response()->json([ 
+        return  response()->json([
                     "status"=>1,
                     "code"=> 200,
                     "message"=>"You've invited your colleague, nice work!",
@@ -744,9 +745,9 @@ class ApiController extends Controller
                 );
 
     }
-    public function cDashboard(){ 
+    public function cDashboard(){
 
-       // $cd = CategoryDashboard::all 
+       // $cd = CategoryDashboard::all
         $image_url = env('IMAGE_URL',url::asset('storage/uploads/category/'));
         $categoryDashboard = CategoryDashboard::with('category')->limit(8)->get();
         $data = [];
@@ -759,11 +760,11 @@ class ApiController extends Controller
             $data['group_id']               = $value->category->parent->id;
             $data['category_group_name']    = $value->category->parent->category_group_name;
             $data['category_group_image']   = $image_url.'/'.$value->category->category_group_image;
-            
+
             $category_data[] = $data;
             }
 
-        } 
+        }
 
         if(count($data)){
             $status = 1;
@@ -775,7 +776,7 @@ class ApiController extends Controller
             $msg    = "Category dashboard list not  found!";
         }
 
-        return  response()->json([ 
+        return  response()->json([
                 "status"=>$status,
                 "code"=> $code,
                 "message"=> $msg,
@@ -794,11 +795,11 @@ class ApiController extends Controller
         try{
             $categoryDashboard = Category::with(['groupCategory'=>function($q){
                  $q->select('id','category_name','category_image','description','parent_id');
-            }])->where('parent_id','=',0)->get(); 
+            }])->where('parent_id','=',0)->get();
             $data = [];
-                  
+
             foreach ($categoryDashboard as $key => $value) {
-                
+
                 $data['group_id']               = $value->id;
                 $data['category_group_name']    = $value->category_group_name;
                 $data['category_group_image']   = $image_url.'/'.$value->category_group_image;
@@ -813,7 +814,7 @@ class ApiController extends Controller
             $code   = 500;
             $msg    = $e->getMessage();
         }
-        
+
         if(count($data)){
             $status = 1;
             $code   = 200;
@@ -824,7 +825,7 @@ class ApiController extends Controller
             $msg    = "Record not  found!";
         }
 
-        return  response()->json([ 
+        return  response()->json([
                 "status"=>$status,
                 "code"=> $code,
                 "message"=> $msg,
@@ -840,16 +841,16 @@ class ApiController extends Controller
         $catId      = null;
         $arr        = [];
         try{
-            $categoryDashboard = Category::where('parent_id','!=',0)->get(); 
+            $categoryDashboard = Category::where('parent_id','!=',0)->get();
             $data = [];
-                       
+
             foreach ($categoryDashboard as $key => $value) {
-                
+
                 $data['category_id']   = $value->id;
                 $data['category_name']   = $value->category_name;
                 $data['category_image']   = $image_url.'/'.$value->category_image;
                 $arr[]              = $data;
-                
+
             }
 
         }catch(\Exception $e){
@@ -858,7 +859,7 @@ class ApiController extends Controller
             $code   = 500;
             $msg    = $e->getMessage();
         }
-        
+
         if(count($data)){
             $status = 1;
             $code   = 200;
@@ -869,7 +870,7 @@ class ApiController extends Controller
             $msg    = "Record not  found!";
         }
 
-        return  response()->json([ 
+        return  response()->json([
                 "status"=>$status,
                 "code"=> $code,
                 "message"=> $msg,
@@ -888,7 +889,7 @@ class ApiController extends Controller
             $category   = Category::where('id',$catId)->first();
             $name       = 'otherCategory';
             $id         = $category->parent_id;
-            
+
         }
         if($request->get('groupId')){
             $catId      = $request->get('groupId');
@@ -900,7 +901,7 @@ class ApiController extends Controller
         try{
             $categoryDashboard = Category::where('parent_id',$id)->where('id','!=',$catId)->where('parent_id','!=',0)->get();
           //  $categoryDashboard = Category::where('parent_id',$id)->get();
-        
+
 
             $data = [];
             $data['category_id']            = $category->id;
@@ -915,8 +916,8 @@ class ApiController extends Controller
             $code   = 500;
             $msg    = "Id does not exist";
         }
-                   
-          
+
+
         if(count($data)){
             $status = 1;
             $code   = 200;
@@ -927,7 +928,7 @@ class ApiController extends Controller
             $msg    = "Record not  found!";
         }
 
-        return  response()->json([ 
+        return  response()->json([
                 "status"=>$status,
                 "code"=> $code,
                 "message"=> $msg,
@@ -937,12 +938,12 @@ class ApiController extends Controller
 
     }
 
-    public function category(){ 
+    public function category(){
 
-       // $cd = CategoryDashboard::all 
+       // $cd = CategoryDashboard::all
         $image_url = env('IMAGE_URL',url::asset('storage/uploads/category/'));
         $categoryDashboard = Category::with('children')->where('parent_id',0)->get();
-        
+
         $data = [];
         $category_data = [];
         foreach ($categoryDashboard as $key => $value) {
@@ -959,10 +960,10 @@ class ApiController extends Controller
                 $data2['description'] = $result->description;
                 $data['category'][] = $data2;
             }
-            
+
             $category_data[] = $data;
 
-        } 
+        }
         if(count($data)){
             $status = 1;
             $code   = 200;
@@ -973,7 +974,7 @@ class ApiController extends Controller
             $msg    = "Category dashboard list not  found!";
         }
 
-        return  response()->json([ 
+        return  response()->json([
                 "status"=>$status,
                 "code"=> $code,
                 "message"=> $msg,
@@ -988,8 +989,8 @@ class ApiController extends Controller
         $emails = ['kroy@mailinator.com'];
 
         Mail::send('emails.welcome', [], function($message) use ($emails)
-        {    
-            $message->to($emails)->subject('This is test e-mail');    
+        {
+            $message->to($emails)->subject('This is test e-mail');
         });
         var_dump( Mail:: failures());
         exit;
@@ -997,10 +998,10 @@ class ApiController extends Controller
     //array_msort($array, $cols)
 
     public function addPersonalMessage(Request $request){
-        
+
         $rs = $request->all();
         $validator = Validator::make($request->all(), [
-            'taskId' => "required", 
+            'taskId' => "required",
             'userId' => "required",
             'comments'=> "required"
         ]);
@@ -1018,13 +1019,13 @@ class ApiController extends Controller
                         'data' => $request->all()
                             )
             );
-        } 
+        }
         $input=[];
         foreach ($rs as $key => $val){
             $input[$key] = $val;
         }
-        
-        \DB::table('messges')->insert($input); 
+
+        \DB::table('messges')->insert($input);
             return response()->json(
                         [
                             "status" =>1,
@@ -1035,13 +1036,13 @@ class ApiController extends Controller
         );
     }
     public function getPersonalMessage(Request $request){
-        
+
         $rs = $request->all();
         $validator = Validator::make($request->all(), [
-            'taskId' => "required", 
+            'taskId' => "required",
            // 'poster_userid' => "required"
         ]);
-        
+
          if ($validator->fails()) {
             $error_msg = [];
             foreach ($validator->messages()->all() as $key => $value) {
@@ -1058,24 +1059,24 @@ class ApiController extends Controller
         }
         $posteduserid   = $request->get('postedUserId');
         $doerUserid     = $request->get('doerUserid');
-        
+
         $data = Messges::with('commentPostedUser')
                     ->with(['taskDetails'=> function($q)use($posteduserid,$doerUserid,$request){
                         if($doerUserid){
                             $q->where('taskDoerId',$doerUserid);
                         }if($posteduserid){
-                            $q->where('taskOwnerId',$posteduserid);    
+                            $q->where('taskOwnerId',$posteduserid);
                         }
                     }])
                     ->where('taskId',$request->get('taskId'))
                     ->where(function($q)use($posteduserid,$doerUserid,$request){
                         if($posteduserid){
-                            $q->where('userId',$posteduserid);      
+                            $q->where('userId',$posteduserid);
                         }
                         if($doerUserid){
-                            $q->where('userId',$doerUserid);      
+                            $q->where('userId',$doerUserid);
                         }
-                    })->get();  
+                    })->get();
 
         return response()->json(
                         [
@@ -1093,7 +1094,7 @@ class ApiController extends Controller
             'userId' => "required",
             'mobileNumber' => 'required'
         ]);
-        
+
          if ($validator->fails()) {
             $error_msg = [];
             foreach ($validator->messages()->all() as $key => $value) {
@@ -1122,7 +1123,7 @@ class ApiController extends Controller
         return response()->json(
                         [
                             "status"    =>  count($data)?1:0,
-                            'code'      =>  count($data)?200:500,
+                            'code'      =>  count($data)?200:401,
                             "message"   =>  count($data)?"Otp generated":"Something went wrong",
                             'data'      =>  $data
                         ]
@@ -1136,7 +1137,7 @@ class ApiController extends Controller
             'otp' => "required",
             'userId' => 'required'
         ]);
-        
+
          if ($validator->fails()) {
             $error_msg = [];
             foreach ($validator->messages()->all() as $key => $value) {
@@ -1151,22 +1152,22 @@ class ApiController extends Controller
                             )
             );
         }
- 
+
 
         $data = \DB::table('mobile_otp')
                     ->where('otp',$request->get('otp'))
                         ->where('userId',$request->get('userId'))->first();
-                            
+
         if($data){
              \DB::table('mobile_otp')
                     ->where('otp',$request->get('otp'))
                         ->where('userId',$request->get('userId'))->update(['is_verified'=>1]);
-                      
+
             \DB::table('users')
                         ->where('id',$request->get('userId'))
                         ->update(['phone'=>$data->mobile]);
         }
-         
+
             return response()->json(
                             [
                                 "status"    =>  count($data)?1:0,
@@ -1174,7 +1175,7 @@ class ApiController extends Controller
                                 "message"   =>  count($data)?"Otp Verified":"Invalid Otp",
                                 'data'      =>  $request->all()
                             ]
-                ); 
+                );
     }
 
     public function sendSMS($mobileNumber=null,$otp=null)
@@ -1183,7 +1184,7 @@ class ApiController extends Controller
 
             $modelNumber = $mobileNumber;
             $message = "Your verification OTP is : ".$otp;
-            $authkey = "224749Am2kvmYg75b4092ed"; 
+            $authkey = "224749Am2kvmYg75b4092ed";
 
             curl_setopt_array($curl, array(
               CURLOPT_URL => "http://control.msg91.com/api/sendotp.php?template=&otp_length=6&authkey=$authkey&message=$message&sender=YTASKR&mobile=$modelNumber&otp=$otp&otp_expiry=&email=kroy@mailinator.com",
@@ -1209,5 +1210,5 @@ class ApiController extends Controller
             } else {
               return true;
             }
-    }    
-} 
+    }
+}

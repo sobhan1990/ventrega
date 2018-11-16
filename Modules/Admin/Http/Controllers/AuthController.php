@@ -84,7 +84,7 @@ class AuthController extends Controller
     }
 
     public function logout()
-    {dd('test');
+    {
         Auth::logout();
         auth()->guard('admin')->logout();
 
