@@ -175,9 +175,8 @@ class AdminUserController  extends Controller
             $user->password = Hash::make($request->get('password'));
         }
 
-        $user->fill(Input::all());
         $action          = $request->get('submit');
-        $user->role_type = $request->get('role_type');
+         $user->role_type = $request->get('role_type');
 
          
         if ($request->file('profile_image')) {

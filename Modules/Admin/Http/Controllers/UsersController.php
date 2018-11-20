@@ -169,7 +169,6 @@ class UsersController extends Controller
             $user->password = Hash::make($request->get('password'));
         }
 
-        $user->fill(Input::all());
         $action          = $request->get('submit');
         $user->role_type = $request->get('role_type');
 
