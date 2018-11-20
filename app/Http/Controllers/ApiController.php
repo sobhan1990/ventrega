@@ -15,6 +15,8 @@ use Auth,Crypt,Hash,Lang,JWTAuth,Input,Closure,URL;
 use JWTExceptionTokenInvalidException;
 use App\Helpers\Helper as Helper;
 use Modules\Admin\Models\User;
+use Modules\Admin\Models\Vendors as Vendor;
+use Modules\Admin\Models\Kyc;
 use Modules\Admin\Models\Category;
 use App\Models\Notification;
 use App\Http\Requests\UserRequest;
@@ -34,6 +36,7 @@ class ApiController extends Controller
     public    $sid      = "";
     public    $token    = "";
     public    $from     = "";
+
 
     public function __construct(Request $request) {
 
@@ -198,10 +201,107 @@ class ApiController extends Controller
         return Response::json(array(
                     'status' => ($user)?1:0,
                     'code' => ($user)?200:404,
-                    'message' => ($user)?'User data fetched.':'Record not found!',
+                    'message' => ($user)?'User data found.':'Record not found!',
                     'data'  =>  $user
                     )
         );
+
+    }
+
+
+    public function updateKyc(Request $request, $userId){
+
+        $document_name = ['adharCard','panCard','voterId','drivingLicense'];
+
+        $vendor = Vendor::findOrNew(['user_id',$userId]);
+
+
+        if(in_array($request->get('documentName'), $document_name)){
+            $kyc    = Kyc::findOrNew(['vendor_id',$vendor->id,'document_name'=>$request->get('documentName')]);
+        }else{
+            $kyc    = Kyc::findOrNew(['vendor_id',$vendor->id]);
+        }
+
+        $kyc->document_name =  $request->get('documentName');
+        $kyc->document_type =  $request->get('documentType');
+        $kyc->vendor_id     =  $vendor->id;
+        $kyc->is_verified   =  "No";
+        $kyc->verified_by   =  "";
+        $kyc->status        =  "Pending";
+
+        return Response::json(array(
+                    'status' => ($kyc)?1:0,
+                    'code' => ($kyc)?200:404,
+                    'message' => "Kyc updated and pending for review.",
+                    'data'  => []
+                    )
+                );
+
+
+    }
+
+    // vendor update
+    public function vendorUpdate(Request $request,$userId){
+
+        $table_cname = \Schema::getColumnListing('vendors');
+        $except = ['id','created_at','updated_at','shopType'];
+
+        $vendor = Vendor::firstOrNew(['user_id'=>$userId]);
+        $userId = User::find($userId);
+
+        if($request->get('first_name') || $request->get('last_name')){
+            $vendor->vendor_name = $request->get('first_name').' '.$request->get('last_name');
+        }
+        $vendor->type = $request->get('shopType');
+        $vendor->role_type = $userId->role_type;
+
+
+        if($request->get('profileImage')){
+            $profile_image = $this->createImage($request->get('profileImage'));
+            if($profile_image==false){
+            }else{
+                $vendor->profile_picture  = $profile_image;
+            }
+
+        }
+
+        if($request->get('latitude')){
+            $vendor->lat = $request->get('latitude');
+        }
+        if($request->get('longitude')){
+            $vendor->lng = $request->get('longitude');
+        }
+
+
+        foreach ($table_cname as $key => $value) {
+
+            if(in_array($value, $except )){
+                continue;
+            }
+            if($request->get(camel_case($value))){
+                $vendor->$value = $request->get(camel_case($value));
+           }
+        }
+
+        try{
+            $vendor->save();
+            $status = 1;
+            $code  = 200;
+            $message ="Vendor Profile updated successfully";
+        }catch(\Exception $e){
+            $status = 0;
+            $code  = 201;
+            $message =$e->getMessage();
+        }
+
+        return response()->json(
+                            [
+                            "status" =>$status,
+                            'code'   => $code,
+                            "message"=> $message,
+                            'data'=>[]
+                            ]
+                        );
 
     }
 
@@ -213,22 +313,24 @@ class ApiController extends Controller
     * Calling Method : get
     */
     public function updateProfile(Request $request,$userId)
+
     {
         $user = User::find($userId);
+        $role       = Config::get('role');
+
         if((User::find($userId))==null)
         {
             return Response::json(array(
                 'status' => 0,
-                'code' => 500,
+                'code' => 201,
                 'message' => 'Invalid user Id!',
-                'data'  =>  ''
+                'data'  =>  []
                 )
             );
         }
 
         $table_cname = \Schema::getColumnListing('users');
-
-        $except = ['id','created_at','updated_at','profile_image','modeOfreach'];
+        $except = ['id','created_at','updated_at','profile_image','modeOfreach','email'];
 
         foreach ($table_cname as $key => $value) {
 
@@ -239,16 +341,13 @@ class ApiController extends Controller
                 $user->$value = $request->get($value);
             }
         }
-        if(count($request->get('modeOfreach'))>0){
-       		$user->modeOfreach = json_encode($request->get('modeOfreach'));
-        }
 
-        if($request->get('profile_image')){
-            $profile_image = $this->createImage($request->get('profile_image'));
+        if($request->get('profilePicture')){
+            $profile_image = $this->createImage($request->get('profilePicture'));
             if($profile_image==false){
                 return Response::json(array(
                     'status' => 0,
-                     'code' => 500,
+                     'code' => 201,
                     'message' => 'Invalid Image format!',
                     'data'  =>  $request->all()
                     )
@@ -256,7 +355,6 @@ class ApiController extends Controller
             }
             $user->profile_image  = $profile_image;
         }
-
         try{
             $user->save();
             $status = 1;
@@ -264,7 +362,7 @@ class ApiController extends Controller
             $message ="Profile updated successfully";
         }catch(\Exception $e){
             $status = 0;
-            $code  = 500;
+            $code  = 201;
             $message =$e->getMessage();
         }
 
@@ -273,7 +371,7 @@ class ApiController extends Controller
                             "status" =>$status,
                             'code'   => $code,
                             "message"=> $message,
-                            'data'=>isset($user)?$user:[]
+                            'data'=>[]
                             ]
                         );
 
@@ -360,6 +458,8 @@ class ApiController extends Controller
                             ]);
                 break;
         }
+
+
 
         if (!$token) {
             return response()->json([ "status"=>0,"code"=>201,"message"=>"Invalid email or password!" ,'data' => $input ]);

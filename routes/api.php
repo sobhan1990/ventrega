@@ -38,12 +38,8 @@ header("Access-Control-Allow-Origin: *");
 Route::group([
 	    'prefix' => 'v1'
 	], function()
-	{
-		Route::get('/test', function(){
-			die('test');
-		});
-
-		Route::match(['post','get'],'member/login', 'ApiController@login');
+    {
+        Route::match(['post','get'],'member/login', 'ApiController@login');
 		Route::match(['post','get'],'member/signup', 'ApiController@register');
 		Route::match(['post','get'],'member/updateProfile/{id}', 'ApiController@updateProfile');
 
@@ -52,15 +48,26 @@ Route::group([
         Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
 
         Route::match(['post','get'],'password/reset','ApiController@resetPassword');
+    // get account
+        Route::match(['post','get'],'member/account/{userId}', 'ApiController@myAccount');
+        Route::match(['post','get'],'vendor/account/{userId}', 'ApiController@myAccount');
+        Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount');
 
-        // Route::match(['post','get'],'validate_user','ApiController@validateUser');
-        // Route::match(['post','get'],'user/updatePassword','ApiController@changePassword');
-        // Route::match(['post','get'],'account/deactivate/{id}','ApiController@deactivateUser');
-        // Route::match(['post','get'],'userDetail/{id}','ApiController@userDetail');
+        // update profile
+        Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate');
+        Route::match(['post','get'],'vendor/updateKyc/{userId}', 'ApiController@updateKyc');
 
+        Route::match(['post','get'],'customer/updateProfile/{userId}', 'ApiController@updateProfile');
+        Route::match(['post','get'],'deliveryBoy/updateProfile/{userId}', 'ApiController@updateProfile');
+
+
+        Route::match(['post','get'],'email_verification','ApiController@emailVerification');
+
+        // Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
+        // Route::match(['post','get'],'password/reset','ApiController@resetPassword');
         Route::group(['middleware' => 'jwt-auth'], function ()
         {
-         	Route::match(['post','get'],'testing',function(){
+        	Route::match(['post','get'],'testing',function(){
             	die('test');
             });
 

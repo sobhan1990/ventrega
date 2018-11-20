@@ -140,7 +140,7 @@ class VendorController extends Controller
             \DB::beginTransaction(); 
 
             $table_cname = \Schema::getColumnListing('vendors');
-            $except = ['id','created_at','updated_at','deleted_at'];
+            $except = ['id','created_at','updated_at','deleted_at','password'];
             
             foreach ($table_cname as $key => $value) {
                
