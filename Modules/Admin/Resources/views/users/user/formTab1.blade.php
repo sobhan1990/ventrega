@@ -26,7 +26,7 @@
         <input type="password" placeholder="******" class="form-control" name="password"> 
     </div>
 
-    <input type="hidden" name="role_type" value="admin">
+    <input type="hidden" name="role_type" value="customer">
     <div class="form-group {{ $errors->first('skills', ' has-error') }}">
         <label class="control-label">Skills</label>
         <input type="text" placeholder="Skills" class="form-control" name="skills" value="{{$user->skills}}"> 

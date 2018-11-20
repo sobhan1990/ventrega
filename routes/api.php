@@ -39,13 +39,23 @@ Route::group([
 	    'prefix' => 'v1'
 	], function()
 	{   
-		Route::get('/test', function(){
-			die('test');
-		});
-		
+		// login and signup
 		Route::match(['post','get'],'member/login', 'ApiController@login');
 		Route::match(['post','get'],'member/signup', 'ApiController@register');
 		Route::match(['post','get'],'member/updateProfile/{id}', 'ApiController@updateProfile'); 
+
+        // get account
+        Route::match(['post','get'],'member/account/{userId}', 'ApiController@myAccount'); 
+        Route::match(['post','get'],'vendor/account/{userId}', 'ApiController@myAccount'); 
+        Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount'); 
+
+        // update profile
+        Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate'); 
+        Route::match(['post','get'],'vendor/updateKyc/{userId}', 'ApiController@updateKyc'); 
+        
+        Route::match(['post','get'],'customer/updateProfile/{userId}', 'ApiController@updateProfile');
+        Route::match(['post','get'],'deliveryBoy/updateProfile/{userId}', 'ApiController@updateProfile'); 
+                
 
         Route::match(['post','get'],'email_verification','ApiController@emailVerification');   
         
