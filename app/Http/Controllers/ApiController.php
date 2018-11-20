@@ -357,7 +357,6 @@ class ApiController extends Controller
                             [   'status'=>1,
                                 'email'=>$request->get('email'),
                                 'password'=>$request->get('password'),
-
                             ]);
                 break;
         }
@@ -480,7 +479,7 @@ class ApiController extends Controller
         if($user==null){
             return Response::json(array(
                 'status' => 0,
-                'code' => 500,
+                'code' => 201,
                 'message' => "Oh no! The address you provided isn't in our system",
                 'data'  =>  $request->all()
                 )
@@ -494,13 +493,14 @@ class ApiController extends Controller
 
         $email_content = array(
                         'receipent_email'   => $request->input('email'),
-                        'subject'           => 'Your Yellotasker Account Password',
-                        'name'              => $user->first_name,
+                        'subject'           => 'Your Ventrega Account Password',
+                        'first_name'        => $user->first_name,
                         'temp_password'     => $temp_password,
                         'encrypt_key'       => Crypt::encrypt($email),
-                        'greeting'          => 'Yellotasker'
+                        'greeting'          => 'Ventrega'
 
                     );
+
         $helper = new Helper;
         $email_response = $helper->sendMail(
                                 $email_content,
@@ -521,7 +521,9 @@ class ApiController extends Controller
     public function resetPassword(Request $request)
     {
         $encryptedValue = $request->get('key')?$request->get('key'):'';
+
         $method_name = $request->method();
+
         $token = $request->get('token');
        // $email = ($request->get('email'))?$request->get('email'):'';
 

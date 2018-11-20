@@ -49,8 +49,9 @@ Route::group([
 
         Route::match(['post','get'],'email_verification','ApiController@emailVerification');
 
-        // Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
-        // Route::match(['post','get'],'password/reset','ApiController@resetPassword');
+        Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
+
+        Route::match(['post','get'],'password/reset','ApiController@resetPassword');
 
         // Route::match(['post','get'],'validate_user','ApiController@validateUser');
         // Route::match(['post','get'],'user/updatePassword','ApiController@changePassword');

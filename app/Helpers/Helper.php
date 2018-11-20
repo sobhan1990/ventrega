@@ -19,14 +19,14 @@ use PHPMailerAutoload;
 
 class Helper
 {
-    
+
 
     public static function setting(){
 
         $setting = \DB::table('settings')->select('field_key','field_value')->get()->toArray();
         $data = [];
         foreach ($setting as $key => $value) {
-           
+
            $data[$value->field_key] = $value->field_value;
         }
 
@@ -50,7 +50,7 @@ class Helper
 
         return $key;
     }
-    
+
 
     public static function FormatPhoneNumber($number)
     {
@@ -85,10 +85,10 @@ class Helper
             $mail->Username   = isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME'); // SMTP account username
             $mail->Password   = isset(Helper::setting()->MAIL_PASSWORD)?Helper::setting()->MAIL_PASSWORD:getenv('MAIL_PASSWORD');
 
-            $username       =  isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME'); 
+            $username       =  isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME');
 
             $email_from       =  isset(Helper::setting()->MAIL_FROM)?Helper::setting()->MAIL_FROM:getenv('MAIL_FROM');
-            
+
             $mail->setFrom($username, $email_from);
             $mail->Subject = $email_content['subject'];
             $mail->MsgHTML($html);
@@ -135,8 +135,8 @@ class Helper
             $mail->Username   = isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME'); // SMTP account username
             $mail->Password   = isset(Helper::setting()->MAIL_PASSWORD)?Helper::setting()->MAIL_PASSWORD:getenv('MAIL_PASSWORD');
 
-            $username       =  isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME'); 
-            $email_from     =  isset(Helper::setting()->MAIL_FROM)?Helper::setting()->MAIL_FROM:getenv('MAIL_FROM'); 
+            $username       =  isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME');
+            $email_from     =  isset(Helper::setting()->MAIL_FROM)?Helper::setting()->MAIL_FROM:getenv('MAIL_FROM');
 
             $mail->setFrom($username, $email_from);
             $mail->Subject = $email_content['subject'];
@@ -160,7 +160,7 @@ class Helper
         }
     }
 
-    
+
     public function sendMailToAdmin($email_content, $template)
     {
         $mail       = new PHPMailer;
@@ -177,7 +177,7 @@ class Helper
             $mail->Host       = getenv('MAIL_HOST'); // sets the SMTP server
             $mail->Port       = 465; //getenv('MAIL_PORT');
             $mail->SMTPSecure = 'ssl';                 // set the SMTP port for the GMAIL server
-            
+
             $mail->Username   = isset(Helper::setting()->MAIL_USERNAME)?Helper::setting()->MAIL_USERNAME:getenv('MAIL_USERNAME'); // SMTP account username
             $mail->Password   = isset(Helper::setting()->MAIL_PASSWORD)?Helper::setting()->MAIL_PASSWORD:getenv('MAIL_PASSWORD');
 
@@ -208,7 +208,7 @@ class Helper
         } catch (phpmailerException $e) {
         } catch (Exception $e) {
         }
-    }    
-    
-    
+    }
+
+
 }
