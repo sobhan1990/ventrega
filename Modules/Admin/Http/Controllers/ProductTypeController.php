@@ -101,10 +101,10 @@ class ProductTypeController extends Controller
     public function store(Request $request, ProductType $producttype)
     {
         $request->validate([
-             'name'  => 'required|unique:product_units,name',  
+             'name'  => 'required|unique:product_types,name',  
         ]);
 
-       $table_cname = \Schema::getColumnListing('producttype');
+       $table_cname = \Schema::getColumnListing('product_types');
             $except = ['id','created_at','updated_at','deleted_at'];
             
             foreach ($table_cname as $key => $value) {
@@ -113,7 +113,7 @@ class ProductTypeController extends Controller
                     continue;
                } 
                if($request->get($value)){
-                    $productunit->$value = $request->get($value);
+                    $producttype->$value = $request->get($value);
                }
         }
  
@@ -140,10 +140,10 @@ class ProductTypeController extends Controller
     public function update(ProductTypeRequest $request, $producttype)
     {
         $request->validate([
-             'name'  => 'required|unique:product_units,name,'.$producttype->id,  
+             'name'  => 'required|unique:product_types,name,'.$producttype->id,  
         ]);
 
-         $table_cname = \Schema::getColumnListing('producttype');
+         $table_cname = \Schema::getColumnListing('product_types');
             $except = ['id','created_at','updated_at','deleted_at'];
             
             foreach ($table_cname as $key => $value) {
@@ -152,7 +152,7 @@ class ProductTypeController extends Controller
                     continue;
                } 
                if($request->get($value)){
-                    $productunit->$value = $request->get($value);
+                    $producttype->$value = $request->get($value);
                }
         }
  
