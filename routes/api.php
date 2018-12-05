@@ -53,6 +53,11 @@ Route::group([
         Route::match(['post','get'],'vendor/account/{userId}', 'ApiController@myAccount');
         Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount');
 
+        //Rajendra Singh
+        Route::match(['post','get'],'member/account/{userId}', 'ApiController@userDetail');
+        Route::match(['post','get'],'member/account/myprofile', 'ApiController@getUserDetails');
+
+
         // update profile
         Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate');
         Route::match(['post','get'],'vendor/updateKyc/{userId}', 'ApiController@updateKyc');
@@ -70,6 +75,8 @@ Route::group([
         	Route::match(['post','get'],'testing',function(){
             	die('test');
             });
+
+
 
         });
 

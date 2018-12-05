@@ -410,6 +410,8 @@ class ApiController extends Controller
     public function login(Request $request)
     {
         $input = $request->all();
+
+
         $user_type = $request->get('authType');
         // Validation
         $validateInput['email'] = 'required|email';
@@ -451,15 +453,15 @@ class ApiController extends Controller
                 break;
 
             default:
+
                 $token = JWTAuth::attempt(
                             [   'status'=>1,
                                 'email'=>$request->get('email'),
                                 'password'=>$request->get('password'),
                             ]);
+
                 break;
         }
-
-
 
         if (!$token) {
             return response()->json([ "status"=>0,"code"=>201,"message"=>"Invalid email or password!" ,'data' => $input ]);
@@ -488,6 +490,7 @@ class ApiController extends Controller
 
     public function getUserDetails(Request $request)
     {
+
         $user = JWTAuth::toUser($request->input('token'));
 
         return response()->json(
