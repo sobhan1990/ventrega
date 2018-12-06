@@ -63,6 +63,17 @@ Route::group([
 
         Route::match(['post','get'],'email_verification','ApiController@emailVerification');
 
+        //date : 06/12/2018
+
+       // get category
+        Route::match(['post','get'],'vendor/product/getCategory','VendorController@allCategory');
+       // search sub categoryby categoryId
+        Route::match(['post','get'],'vendor/product/getSubCategoryById/{categoryId}','VendorController@subCategory');
+        // get product by id
+        Route::match(['post','get'],'vendor/getProductByVendorId/{vendorId}','VendorController@getProduct');
+
+
+
         // Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
         // Route::match(['post','get'],'password/reset','ApiController@resetPassword');
         Route::group(['middleware' => 'jwt-auth'], function ()
