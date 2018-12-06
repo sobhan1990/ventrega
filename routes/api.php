@@ -55,7 +55,12 @@ Route::group([
 
         //Rajendra Singh
         Route::match(['post','get'],'member/account/{userId}', 'ApiController@userDetail');
+
         Route::match(['post','get'],'member/account/myprofile', 'ApiController@getUserDetails');
+
+        Route::match(['post','get'],'vendore/addproduct', 'ApiController@AddVendorProduct');
+
+        Route::match(['post','get'],'vendore/deleteproduct', 'ApiController@destroy');
 
 
         // update profile
@@ -98,5 +103,5 @@ Route::group([
 						];
 				return \Response::json($data);
 
-			});
+		});
 });
