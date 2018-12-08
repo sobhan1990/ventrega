@@ -53,6 +53,16 @@ Route::group([
         Route::match(['post','get'],'vendor/account/{userId}', 'ApiController@myAccount');
         Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount');
 
+        //Rajendra Singh
+        Route::match(['post','get'],'member/account/{userId}', 'ApiController@userDetail');
+
+        Route::match(['post','get'],'member/account/myprofile', 'ApiController@getUserDetails');
+
+        Route::match(['post','get'],'vendore/addproduct', 'ApiController@AddVendorProduct');
+
+        Route::match(['post','get'],'vendore/deleteproduct', 'ApiController@destroy');
+
+
         // update profile
         Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate');
         Route::match(['post','get'],'vendor/updateKyc/{userId}', 'ApiController@updateKyc');
@@ -82,6 +92,8 @@ Route::group([
             	die('test');
             });
 
+
+
         });
 
         Route::match(['get','post'],'generateOtp',[
@@ -102,5 +114,5 @@ Route::group([
 						];
 				return \Response::json($data);
 
-			});
+		});
 });

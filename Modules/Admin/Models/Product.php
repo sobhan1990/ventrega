@@ -70,6 +70,6 @@ class Product extends Eloquent
     }
 
     public function vendorProduct(){
-       return $this->hasMany('Modules\Admin\Models\VendorProduct','product_id'); 
+       return $this->hasMany('Modules\Admin\Models\VendorProduct','product_id');
     }
 }
