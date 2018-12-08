@@ -58,6 +58,11 @@ class Category extends Eloquent
     }
 
 
+    public function subCategory(){
+        return $this->belongsTo('Modules\Admin\Models\Category', 'parent_id');
+    }
+
+
     public function products(){
         return $this->hasMany('Modules\Admin\Models\Product', 'product_category');
 

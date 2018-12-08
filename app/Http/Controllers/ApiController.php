@@ -24,7 +24,8 @@ use Illuminate\Http\Dispatcher;
 use Cookie;
 
 use Modules\Admin\Models\Product;
-
+use Modules\Admin\Models\ProductType;
+use Modules\Admin\Models\ProductUnit;
 use Modules\Admin\Models\VendorProduct;
 
 
@@ -251,6 +252,7 @@ class ApiController extends Controller
     public function vendorUpdate(Request $request,$userId){
 
         $table_cname = \Schema::getColumnListing('vendors');
+
         $except = ['id','created_at','updated_at','shopType'];
 
         $vendor = Vendor::firstOrNew(['user_id'=>$userId]);
@@ -1448,6 +1450,51 @@ class ApiController extends Controller
             ]
         );
 
+    }
+
+    public function getProductUnit(){
+
+        $productunits =  ProductUnit::where('status', 1)->pluck('name', 'id');
+
+        if(count($productunits)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Product Unit list.";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Product Unit list not found!";
+        }
+
+        return  response()->json([
+                "status"=>$status,
+                "message"=> $msg,
+                'data' => $productunits
+            ]
+        );
+
+    }
+
+    public function getProductType(){
+
+        $producttypes =  ProductType::where('status', 1)->pluck('name', 'id');
+
+        if(count($producttypes)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Product Type list.";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Product Type list not found!";
+        }
+
+        return  response()->json([
+                "status"=>$status,
+                "message"=> $msg,
+                'data' => $producttypes
+            ]
+        );
     }
 
 }
