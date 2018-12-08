@@ -1337,19 +1337,17 @@ class ApiController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'product_title' => 'required',
-            'store_price' => 'required',
-            'product_category' => 'required',
+            'productTitle' => 'required',
+            'storePrice' => 'required',
+            'productCategory' => 'required',
             'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
          ]);
-
 
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);
-                    }
-
+                array_push($error_msg, $value);
+            }
             return Response::json(array(
                 'status' => 0,
                 'code'=>201,
@@ -1358,11 +1356,12 @@ class ApiController extends Controller
                 )
             );
         }
-
-        $cat_url    = $this->getCategoryById($request->get('product_category'));
-        $pro_slug   = str_slug($request->get('product_title'));
+        $cat_url    = $this->getCategoryById($request->get('productCategory'));
+        $pro_slug   = str_slug($request->get('productTitle'));
         $url        = $cat_url.$pro_slug;
-
+        $product = new Product;
+        $product->slug  = $pro_slug ;
+        $product->url   = $url;
         try {
             \DB::beginTransaction();
 
@@ -1375,22 +1374,20 @@ class ApiController extends Controller
                if(in_array($value, $except )){
                     continue;
                }
+               if($request->get(camel_case($value))){
+                  $product->$value = $request->get(camel_case($value));
+                }
             }
 
-
-            $request['slug']   =   str_slug($request->get('product_title'));
-            $request['url']    =   $url;
-
-            $product = Product::create($request->all());
+            $product->save();
             // vendor
             $vendorProduct =  VendorProduct::firstOrNew(
                 [
-                    'vendor_id'=> $request->get('vendor_id'),
+                    'vendor_id'=> $request->get('vendorId'),
                     'product_id'=>$product->id
                 ]
             );
-
-            $vendorProduct->vendor_id = $request->get('vendor_id');
+            $vendorProduct->vendor_id = $request->get('vendorId');
             $vendorProduct->product_id = $product->id;
             $vendorProduct->save();
 
@@ -1418,13 +1415,11 @@ class ApiController extends Controller
             'product_id' => 'required',
             'vendor_id' => 'required'
          ]);
-
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
                         array_push($error_msg, $value);
                     }
-
             return Response::json(array(
                 'status' => 0,
                 'code'=>201,
@@ -1433,13 +1428,8 @@ class ApiController extends Controller
                 )
             );
         }
-
-
         $product = Product::findOrFail($request->get('product_id'))->delete();
-
-
         $msg = 'Product was successfully deleted !';
-
         return response()->json(
             [
                 "status"    =>  1,
@@ -1453,7 +1443,7 @@ class ApiController extends Controller
 
     public function getProductUnit(){
 
-        $productunits =  ProductUnit::where('status', 1)->pluck('name', 'id');
+        $productunits =  ProductUnit::where('status', 1)->pluck('id','name');
 
         if(count($productunits)){
             $status = 1;
@@ -1476,7 +1466,7 @@ class ApiController extends Controller
 
     public function getProductType(){
 
-        $producttypes =  ProductType::where('status', 1)->pluck('name', 'id');
+        $producttypes =  ProductType::where('status', 1)->pluck('id','name');
 
         if(count($producttypes)){
             $status = 1;
