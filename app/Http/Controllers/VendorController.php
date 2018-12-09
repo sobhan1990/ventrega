@@ -395,10 +395,59 @@ class VendorController extends Controller
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // sub category
     public function getProduct(Request $request, $vendorId=null)
     {
 =======
+=======
+    public function showDefaultProducts(Request $request){
+
+
+        try{ 
+            
+
+            $data = Product::with(['category'=> function($query){
+                $url = url('/');
+                $query->select('id','category_name','commission',\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath'));
+            }])->with(['units'=> function($query){
+                $query->select('id','name','full_name','description');
+            }])->where(function ($query)  {
+                $query->where('vendor_id',NULL);
+            })
+           // ->whereHas('vendorProduct')
+            ->orderBy('id', 'desc')
+            ->get(); 
+ 
+        }catch(\Exception $e){ dd($e);
+            $data = [];
+            $status = 0;
+            $code   = 500;
+            $msg    = $e->getMessage();
+        }
+
+        if(count($data)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Category list found";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Record not  found!";
+        }
+
+        return  response()->json([
+                "totalItem" => isset($data)?$data->count():0,
+                "status"=>$status,
+                "code"=> $code,
+                "message"=> $msg,
+                'data' => $data
+            ]
+        );
+
+    }
+
+>>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
      // sub category
     public function getProduct(Request $request, $vendorId=null)
     { 
@@ -412,6 +461,7 @@ class VendorController extends Controller
             $vendor_id = $vendorId;
 =======
         try{ 
+<<<<<<< HEAD
             $vendor_id = $vendorId;   
 >>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
             $search = $request->get('productTitle');
@@ -436,16 +486,36 @@ class VendorController extends Controller
                 if($product_ids || $vendor_id){  
 >>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
                     $query->where('id', $vendor_id);
+=======
+            $productFromVendor = \DB::table('vendor_products')->where('vendor_id',$vendorId)->pluck('product_id')->toArray();
+
+            $data = Product::with(['category'=> function($query){
+                $url = url('/');
+                $query->select('id','category_name','commission',\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath'));
+            }])->with(['units'=> function($query){
+                $query->select('id','name','full_name','description');
+            }])->where(function ($query) use ($productFromVendor,$vendorId) {
+                if (!empty($productFromVendor)) {
+                    $query->orWhereIn('id', $productFromVendor);
+                }
+                 
+                if($vendorId){  
+                    $query->orWhere('vendor_id', $vendorId);
+>>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
                 }
             })
            // ->whereHas('vendorProduct')
             ->orderBy('id', 'desc')
+<<<<<<< HEAD
             ->get();
 <<<<<<< HEAD
 
 
 =======
          
+=======
+            ->get(); 
+>>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
  
 >>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
         }catch(\Exception $e){ dd($e);
