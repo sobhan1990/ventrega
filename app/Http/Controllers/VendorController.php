@@ -371,7 +371,7 @@ class VendorController extends Controller
             }])->with(['units'=> function($query){
                 $query->select('id','name','full_name','description');
             }])->where(function ($query)  {
-                //
+                $query->where('vendor_id',NULL);
             })
            // ->whereHas('vendorProduct')
             ->orderBy('id', 'desc')
