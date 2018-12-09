@@ -359,6 +359,52 @@ class VendorController extends Controller
 
     }
 
+    public function showDefaultProducts(Request $request){
+
+
+        try{ 
+            
+
+            $data = Product::with(['category'=> function($query){
+                $url = url('/');
+                $query->select('id','category_name','commission',\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath'));
+            }])->with(['units'=> function($query){
+                $query->select('id','name','full_name','description');
+            }])->where(function ($query)  {
+                //
+            })
+           // ->whereHas('vendorProduct')
+            ->orderBy('id', 'desc')
+            ->get(); 
+ 
+        }catch(\Exception $e){ dd($e);
+            $data = [];
+            $status = 0;
+            $code   = 500;
+            $msg    = $e->getMessage();
+        }
+
+        if(count($data)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Category list found";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Record not  found!";
+        }
+
+        return  response()->json([
+                "totalItem" => isset($data)?$data->count():0,
+                "status"=>$status,
+                "code"=> $code,
+                "message"=> $msg,
+                'data' => $data
+            ]
+        );
+
+    }
+
      // sub category
     public function getProduct(Request $request, $vendorId=null)
     { 

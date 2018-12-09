@@ -86,6 +86,7 @@ Route::group([
         // get product by id
         Route::match(['post','get'],'vendor/getProductByVendorId/{vendorId}','VendorController@getProduct');
 
+        Route::match(['post','get'],'vendor/showDefaultProducts','VendorController@showDefaultProducts');
 
 
         // Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
