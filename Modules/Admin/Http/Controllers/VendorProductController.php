@@ -15,8 +15,8 @@ use Modules\Admin\Models\Product;
 use Modules\Admin\Models\Category;
 use Modules\Admin\Models\ProductType;
 use Modules\Admin\Models\ProductUnit;
-use Modules\Admin\Models\Vendor; 
-use Modules\Admin\Models\VendorProduct; 
+use Modules\Admin\Models\Vendor;
+use Modules\Admin\Models\VendorProduct;
 use Route;
 use URL;
 use View;
@@ -53,15 +53,15 @@ class VendorProductController extends Controller
         View::share('viewPage', 'Vendor Product');
         View::share('helper', new Helper);
         View::share('heading', 'Products');
-        View::share('route_url', route('vendorProduct')); 
+        View::share('route_url', route('vendorProduct'));
         $this->record_per_page = Config::get('app.record_per_page');
 
         $submenu = [
                 route('product.create')=>'Create Product',
                 route('product')=>'View Products',
             ];
-        View::share('submenu',   $submenu); 
-        View::share('js', true); 
+        View::share('submenu',   $submenu);
+        View::share('js', true);
     }
 
     /*
@@ -92,10 +92,10 @@ class VendorProductController extends Controller
         $vendor_id = $request->get('vendor_id');
 
         $product_ids = VendorProduct::where('vendor_id',$vendor_id)->pluck('product_id')->toArray();
-        
 
-        //$status = Input::get('status'); 
-        
+
+        //$status = Input::get('status');
+
         if ((isset($search) && !empty($search))) {
             $categoryArray = Category::where('category_name', 'LIKE', "%$search%")->pluck('id');
             $products = Product::with('category')->where(function ($query) use ($search,$categoryArray,$category_id,$product_ids,$vendor_id) {
@@ -108,25 +108,25 @@ class VendorProductController extends Controller
                 if ($category_id) {
                     $query->orWhere('product_category', $category_id);
                 }
-                if($product_ids || $vendor_id){  
+                if($product_ids || $vendor_id){
                     $query->whereIn('id', $product_ids);
                 }
             })
             ->whereHas('vendorProduct')
             ->orderBy('id', 'desc')->Paginate($this->record_per_page);
-        } else {  
+        } else {
             $products = Product::with('category')->orderBy('id', 'desc')->where(function($query) use($category_id,$product_ids,$vendor_id){
                if ($category_id) {
                     $query->where('product_category', $category_id);
                 }
-                if($product_ids || $vendor_id){  
+                if($product_ids || $vendor_id){
                     $query->whereIn('id', $product_ids);
                 }
             })
             ->whereHas('vendorProduct')
             ->Paginate($this->record_per_page);
         }
-            
+
 
         return view('admin::vendor_product.index', compact('products', 'page_title', 'page_action'));
     }
@@ -134,10 +134,10 @@ class VendorProductController extends Controller
 
     public function create(Request $request, Product $product)
     {
-        $page_title  = 'Product'; 
+        $page_title  = 'Product';
         $page_action = 'Add Product';
 
-       
+
 
         $categories = Category::attr(['name' => 'product_category','class'=>'form-control form-cascade-control input-small','id'=>'product_category','placeholder'=>'select category'])
                         ->selected([1])
@@ -149,9 +149,9 @@ class VendorProductController extends Controller
         $producttypes =  ProductType::where('status', 1)->pluck('name', 'id');
 
         $existing_product = $request->get('product');
-        $vendors = Vendor::all(); 
+        $vendors = Vendor::all();
         $products = Category::with('products')->get();
-        
+
 
         return view('admin::vendor_product.create', compact('categories','product','page_title', 'page_action','productunits','producttypes','category','products','vendors','existing_product'));
     }
@@ -166,9 +166,11 @@ class VendorProductController extends Controller
 
     public function store(Request $request, Product $product)
     {
+
+
         if($request->get('existing_product')){
            $vendors = $request->get('vendors');
-           $products = $request->get('products'); 
+           $products = $request->get('products');
            foreach ($vendors as $key => $vendor) {
 
               $vendorProduct = new VendorProduct;
@@ -176,8 +178,8 @@ class VendorProductController extends Controller
               foreach ($products as $key => $product) {
                 $vendorProduct->product_id = $product;
               }
-                $vendorProduct->save();  
-           } 
+                $vendorProduct->save();
+           }
            $msg = count($products) ." Product added successfully.";
         return Redirect::to(route('vendorProduct'))
                             ->with('flash_alert_notice', $msg);
@@ -188,12 +190,12 @@ class VendorProductController extends Controller
         $pro_slug   = str_slug($request->get('product_title'));
         $url        = $cat_url.$pro_slug;
 
-        $request->validate([  
+        $request->validate([
             'product_title' => 'required',
             'store_price' => 'required',
             'product_category' => 'required',
             'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
-        ]); 
+        ]);
 
         if ($request->file('image')) {
             $destinationPath = storage_path('uploads/products');
@@ -207,30 +209,30 @@ class VendorProductController extends Controller
                 }
                 $product->additional_images  = json_encode($images);
             }
-        }    
+        }
 
         try {
-            \DB::beginTransaction(); 
+            \DB::beginTransaction();
 
             $table_cname = \Schema::getColumnListing('products');
             $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
-           
+
             foreach ($table_cname as $key => $value) {
-               
+
                if(in_array($value, $except )){
                     continue;
-               } 
-               if($request->file($value)){  
+               }
+               if($request->file($value)){
                     $product->$value = Vendor::uploadImage($request, 'products' ,$value);
-                  
+
                }else if($request->get($value)){
                     $product->$value = $request->get($value);
                }
-            } 
+            }
             $product->slug   =   str_slug($request->get('product_title'));
-            $product->url    =   $url; 
-            $product->save(); 
-            // vendor 
+            $product->url    =   $url;
+            $product->save();
+            // vendor
             $vendorProduct =  VendorProduct::firstOrNew(
                 [
                     'vendor_id'=> $request->get('vendor_id'),
@@ -242,16 +244,16 @@ class VendorProductController extends Controller
             $vendorProduct->product_id = $product->id;
             $vendorProduct->save();
 
-            \DB::commit(); 
+            \DB::commit();
             $msg = 'New Product was successfully created !';
-        } catch (\Exception $e) {  
-             \DB::rollback(); 
+        } catch (\Exception $e) {
+             \DB::rollback();
             $msg = $e->getMessage();
-        }    
+        }
 
         if($request->get('btn_name')=="Save & Continue"){
             return Redirect::to(route('vendorProduct.edit',$product->id))
-                            ->with('flash_alert_notice', $msg);  
+                            ->with('flash_alert_notice', $msg);
         }
 
         return Redirect::to(route('vendorProduct'))
@@ -269,11 +271,11 @@ class VendorProductController extends Controller
 
     public function edit(Request $request,Product $product) {
 
-        $page_title = 'Product'; 
-        $page_action = 'View Product'; 
+        $page_title = 'Product';
+        $page_action = 'View Product';
         $category   = Category::all();
         $existing_product = $request->get('product');
-        $vendors = Vendor::all(); 
+        $vendors = Vendor::all();
         $products = Category::with('products')->get();
 
         $cat = [];
@@ -315,32 +317,32 @@ class VendorProductController extends Controller
                 }
                 $product->additional_images  = json_encode($images);
             }
-        }    
+        }
 
           try {
-            \DB::beginTransaction(); 
+            \DB::beginTransaction();
 
             $table_cname = \Schema::getColumnListing('products');
             $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
-           
+
             foreach ($table_cname as $key => $value) {
-               
+
                if(in_array($value, $except )){
                     continue;
-               } 
-               if($request->file($value)){  
+               }
+               if($request->file($value)){
                     $product->$value = Vendor::uploadImage($request, 'products' ,$value);
-                  
+
                }else if($request->get($value)){
                     $product->$value = $request->get($value);
                }
-            } 
+            }
             $product->slug   =   str_slug($request->get('product_title'));
-            $product->url    =   $url; 
+            $product->url    =   $url;
 
-            $product->save(); 
+            $product->save();
 
-            // vendor 
+            // vendor
             $vendorProduct =  VendorProduct::firstOrNew(
                 [
                     'vendor_id'=> $request->get('vendor_id'),
@@ -352,16 +354,16 @@ class VendorProductController extends Controller
             $vendorProduct->product_id = $product->id;
             $vendorProduct->save();
 
-            \DB::commit(); 
+            \DB::commit();
             $msg = 'Product was successfully updated!';
-        } catch (\Exception $e) {  
-             \DB::rollback(); 
+        } catch (\Exception $e) {
+             \DB::rollback();
             $msg = $e->getMessage();
-        }    
+        }
 
         if($request->get('btn_name')=="Save & Continue"){
             return Redirect::to(route('vendorProduct.edit',$product->id))
-                            ->with('flash_alert_notice', $msg);  
+                            ->with('flash_alert_notice', $msg);
         }
 
         return Redirect::to(route('vendorProduct'))

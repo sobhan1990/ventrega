@@ -189,6 +189,7 @@ class ProductController extends Controller
                     $product->$value = $request->get($value);
                }
             }
+            
             $product->slug   =   str_slug($request->get('product_title'));
             $product->url    =   $url;
 

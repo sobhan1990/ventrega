@@ -40,7 +40,7 @@ class VendorProduct extends Eloquent
      * @var array
      */
 
-    protected $fillable = ['product_id','vendor_id','status','url','pincode'];   
+    protected $fillable = ['product_id','vendor_id','status','url','pincode'];
 
     /**
      * The attributes that should be hidden for arrays.

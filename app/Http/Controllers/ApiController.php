@@ -23,6 +23,14 @@ use App\Http\Requests\UserRequest;
 use Illuminate\Http\Dispatcher;
 use Cookie;
 
+use Modules\Admin\Models\Product;
+use Modules\Admin\Models\ProductType;
+use Modules\Admin\Models\ProductUnit;
+use Modules\Admin\Models\VendorProduct;
+
+
+
+
 class ApiController extends Controller
 {
    /* @method : validateUser
@@ -410,6 +418,8 @@ class ApiController extends Controller
     public function login(Request $request)
     {
         $input = $request->all();
+
+
         $user_type = $request->get('authType');
         // Validation
         $validateInput['email'] = 'required|email';
@@ -451,15 +461,15 @@ class ApiController extends Controller
                 break;
 
             default:
+
                 $token = JWTAuth::attempt(
                             [   'status'=>1,
                                 'email'=>$request->get('email'),
                                 'password'=>$request->get('password'),
                             ]);
+
                 break;
         }
-
-
 
         if (!$token) {
             return response()->json([ "status"=>0,"code"=>201,"message"=>"Invalid email or password!" ,'data' => $input ]);
@@ -488,6 +498,7 @@ class ApiController extends Controller
 
     public function getUserDetails(Request $request)
     {
+
         $user = JWTAuth::toUser($request->input('token'));
 
         return response()->json(
@@ -1313,4 +1324,166 @@ class ApiController extends Controller
               return true;
             }
     }
+
+
+    public function getCategoryById($id){
+
+        $url =  Category::where('id',$id)->first();
+        return  $url->slug.'/';
+    }
+
+
+    public function AddVendorProduct(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'productTitle' => 'required',
+            'storePrice' => 'required',
+            'productCategory' => 'required',
+            'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
+         ]);
+
+        if ($validator->fails()) {
+            $error_msg  =  [];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                'status' => 0,
+                'code'=>201,
+                'message' => $error_msg[0],
+                'data'  =>  $request->all()
+                )
+            );
+        }
+        $cat_url    = $this->getCategoryById($request->get('productCategory'));
+        $pro_slug   = str_slug($request->get('productTitle'));
+        $url        = $cat_url.$pro_slug;
+        $product = new Product;
+        $product->slug  = $pro_slug ;
+        $product->url   = $url;
+        try {
+            \DB::beginTransaction();
+
+            $table_cname = \Schema::getColumnListing('products');
+
+            $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
+
+            foreach ($table_cname as $key => $value) {
+
+               if(in_array($value, $except )){
+                    continue;
+               }
+               if($request->get(camel_case($value))){
+                  $product->$value = $request->get(camel_case($value));
+                }
+            }
+
+            $product->save();
+            // vendor
+            $vendorProduct =  VendorProduct::firstOrNew(
+                [
+                    'vendor_id'=> $request->get('vendorId'),
+                    'product_id'=>$product->id
+                ]
+            );
+            $vendorProduct->vendor_id = $request->get('vendorId');
+            $vendorProduct->product_id = $product->id;
+            $vendorProduct->save();
+
+            \DB::commit();
+            $msg = 'New Product was successfully created !';
+
+        } catch (\Exception $e) {
+             \DB::rollback();
+            $msg = $e->getMessage();
+        }
+
+        return response()->json(
+            [
+                "status"    =>  1,
+                "code"      =>  200,
+                "message"   =>  $msg,
+                'data'      => $request->all()
+            ]
+        );
+    }
+
+    public function destroy(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required',
+            'vendor_id' => 'required'
+         ]);
+        if ($validator->fails()) {
+            $error_msg  =  [];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                        array_push($error_msg, $value);
+                    }
+            return Response::json(array(
+                'status' => 0,
+                'code'=>201,
+                'message' => $error_msg[0],
+                'data'  =>  $request->all()
+                )
+            );
+        }
+        $product = Product::findOrFail($request->get('product_id'))->delete();
+        $msg = 'Product was successfully deleted !';
+        return response()->json(
+            [
+                "status"    =>  1,
+                "code"      =>  200,
+                "message"   =>  $msg,
+                'data'      => $request->all()
+            ]
+        );
+
+    }
+
+    public function getProductUnit(){
+
+        $productunits =  ProductUnit::where('status', 1)->pluck('id','name');
+
+        if(count($productunits)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Product Unit list.";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Product Unit list not found!";
+        }
+
+        return  response()->json([
+                "status"=>$status,
+                "message"=> $msg,
+                'data' => $productunits
+            ]
+        );
+
+    }
+
+    public function getProductType(){
+
+        $producttypes =  ProductType::where('status', 1)->pluck('id','name');
+
+        if(count($producttypes)){
+            $status = 1;
+            $code   = 200;
+            $msg    = "Product Type list.";
+        }else{
+            $status = 0;
+            $code   = 404;
+            $msg    = "Product Type list not found!";
+        }
+
+        return  response()->json([
+                "status"=>$status,
+                "message"=> $msg,
+                'data' => $producttypes
+            ]
+        );
+    }
+
 }

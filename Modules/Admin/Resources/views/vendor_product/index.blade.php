@@ -6,7 +6,7 @@
 
       @include('admin::partials.breadcrumb')
 
-       @include('admin::partials.sidebar') 
+       @include('admin::partials.sidebar')
 
             <div class="panel panel-white">
   		          <div class="panel panel-flat">
@@ -50,7 +50,7 @@
                         <tr>
                           <th><div class="mt-checkbox-list">
                                     <label class="mt-checkbox mt-checkbox-outline">
-                                        <input type="checkbox" onclick="checkAll(this)" > 
+                                        <input type="checkbox" onclick="checkAll(this)" >
                                         <span></span>
                                     </label>
                                     </div></th>
@@ -58,9 +58,9 @@
                             <th> Product Title </th>
                             <th> Image </th>
                             <th> Category </th>
-                            <th> Stock Price </th> 
+                            <th> Stock Price </th>
                             <th> MRP </th>
-                            <th> Discount </th> 
+                            <th> Discount </th>
                             <th> Selling Price </th>
                             <th> Status</th>
                             <th> Created date</th>
@@ -71,7 +71,7 @@
                                 <td colspan="12">
                                     <div class="alert alert-danger alert-dismissable">
                                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                                        <i class="icon fa fa-check"></i>  
+                                        <i class="icon fa fa-check"></i>
                                         {{ 'Record not found. !' }}
                                     </div>
                                 </td>
@@ -86,9 +86,9 @@
                        <?php $url = url($result->photo); ?>
                       @endif
                         <tr>
-                          <td>     
-                          <input type="checkbox" name="checkAll" id="chk_{{$result->id}}" value="{{$result->id}}" >  
-                                    
+                          <td>
+                          <input type="checkbox" name="checkAll" id="chk_{{$result->id}}" value="{{$result->id}}" >
+
                            </td>
                             <td> {{++$key}} </td>
                             <td> {{$result->product_title}} </td>
@@ -99,10 +99,10 @@
                             </td>
 
                             <td>{{$result->category->category_name??null}}</td>
-                            <td>{{ money_format("%.2n", (float)$result->store_price)}} INR</td> 
-                            <td>{{ money_format("%.2n", (float)$result->price)}} INR</td>
-                            <td>{{ money_format("%.2n", (float)$result->discount)}} ({{$result->discount_type}})  </td> 
-                            <td>{{ money_format("%.2n", (float)$result->discount_price)}} INR</td>
+                            <td>{{ $result->store_price}} INR</td>
+                            <td>{{ $result->price}} INR</td>
+                            <td>{{ $result->discount}} ({{$result->discount_type}})  </td>
+                            <td>{{ $result->discount_price}} INR</td>
                             <td>
                                 <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'product')" >
                                     {{ ($result->status==1)?'Active':'Inactive'}}
@@ -111,16 +111,16 @@
                             <td>
                                     {!! Carbon\Carbon::parse($result->created_at)->format($date_format); !!}
                             </td>
-                           <td> 
+                           <td>
                              <a href="{{ route('vendorProduct.edit',$result->id)}}" class="btn btn-primary btn-xs" style="margin: 3px">
-                            <i class="icon-pencil7" title="edit"></i>  
-                            </a> 
+                            <i class="icon-pencil7" title="edit"></i>
+                            </a>
 
                             {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'style'=>'margin:3px', 'route' => array('vendorProduct.destroy', $result->id))) !!}
 
-                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="icon-trash" title="Delete"></i> 
-                            </button> 
-                            {!! Form::close() !!} 
+                            <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="icon-trash" title="Delete"></i>
+                            </button>
+                            {!! Form::close() !!}
 
                             </td>
 
@@ -129,14 +129,14 @@
 
                     </tbody>
 
-                </table> 
+                </table>
                 <p style="margin: 10px">
                  Showing {{($products->currentpage()-1)*$products->perpage()+1}} to {{$products->currentpage()*$products->perpage()}}
                 of  {{$products->total()}} entries  </p>
-                </div> 
+                </div>
                 </div>
 
-                <div class="col-md-12">  
+                <div class="col-md-12">
                    <div class="col-md-5">
                    @if($products->count())
                       <span id="error_msg"></span>
@@ -145,7 +145,7 @@
                  </div>
                  <div class="col-md-6">
                     <div class="center" align="left">  {!! $products->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
-                </div> 
+                </div>
 
               </div>
               </div>

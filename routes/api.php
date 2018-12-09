@@ -53,6 +53,20 @@ Route::group([
         Route::match(['post','get'],'vendor/account/{userId}', 'ApiController@myAccount');
         Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount');
 
+        //Rajendra Singh
+        Route::match(['post','get'],'member/account/{userId}', 'ApiController@userDetail');
+
+        Route::match(['post','get'],'member/account/myprofile', 'ApiController@getUserDetails');
+
+        Route::match(['post','get'],'vendore/addproduct', 'ApiController@AddVendorProduct');
+
+        Route::match(['post','get'],'vendore/deleteproduct', 'ApiController@destroy');
+
+        Route::match(['post','get'],'product/unit', 'ApiController@getProductUnit');
+
+        Route::match(['post','get'],'product/type', 'ApiController@getProductType');
+
+
         // update profile
         Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate');
         Route::match(['post','get'],'vendor/updateKyc/{userId}', 'ApiController@updateKyc');
@@ -63,6 +77,17 @@ Route::group([
 
         Route::match(['post','get'],'email_verification','ApiController@emailVerification');
 
+        //date : 06/12/2018
+
+       // get category
+        Route::match(['post','get'],'vendor/product/getCategory','VendorController@allCategory');
+       // search sub categoryby categoryId
+        Route::match(['post','get'],'vendor/product/getSubCategoryById/{categoryId}','VendorController@subCategory');
+        // get product by id
+        Route::match(['post','get'],'vendor/getProductByVendorId/{vendorId}','VendorController@getProduct');
+
+
+
         // Route::match(['post','get'],'user/forgotPassword','ApiController@forgetPassword');
         // Route::match(['post','get'],'password/reset','ApiController@resetPassword');
         Route::group(['middleware' => 'jwt-auth'], function ()
@@ -70,6 +95,8 @@ Route::group([
         	Route::match(['post','get'],'testing',function(){
             	die('test');
             });
+
+
 
         });
 
@@ -91,5 +118,5 @@ Route::group([
 						];
 				return \Response::json($data);
 
-			});
+		});
 });
