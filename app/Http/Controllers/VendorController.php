@@ -367,31 +367,25 @@ class VendorController extends Controller
         $catId      = null;
         $data        = [];
         try{ 
-            $vendor_id = $vendorId;   
-            $search = $request->get('productTitle');
+            $productFromVendor = \DB::table('vendor_products')->where('vendor_id',$vendorId)->pluck('product_id')->toArray();
 
-            $categoryArray = Category::where('category_name', 'LIKE', "%$search%")->pluck('id');
-            $category_id = $request->get('categoryId');
-            $product_ids = $request->get('productId');
-
-            $data = Product::with('category')->where(function ($query) use ($categoryArray,$category_id,$product_ids,$vendor_id) {
-                if (!empty($search)) {
-                    $query->Where('product_title', 'LIKE', "%$search%");
+            $data = Product::with(['category'=> function($query){
+                $url = url('/');
+                $query->select('id','category_name','commission',\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath'));
+            }])->with(['units'=> function($query){
+                $query->select('id','name','full_name','description');
+            }])->where(function ($query) use ($productFromVendor,$vendorId) {
+                if (!empty($productFromVendor)) {
+                    $query->orWhereIn('id', $productFromVendor);
                 }
-                if (!empty($categoryArray)) {
-                    $query->orWhereIn('product_category', $categoryArray);
-                }
-                if ($category_id) {
-                    $query->orWhere('product_category', $category_id);
-                }
-                if($product_ids || $vendor_id){  
-                    $query->where('id', $vendor_id);
+                 
+                if($vendorId){  
+                    $query->orWhere('vendor_id', $vendorId);
                 }
             })
            // ->whereHas('vendorProduct')
             ->orderBy('id', 'desc')
-            ->get();
-         
+            ->get(); 
  
         }catch(\Exception $e){ dd($e);
             $data = [];
