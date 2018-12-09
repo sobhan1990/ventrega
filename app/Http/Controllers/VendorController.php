@@ -77,11 +77,7 @@ class VendorController extends Controller
             );
     }
 
-<<<<<<< HEAD
-
-=======
    
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
 
     public function createImage($base64)
     {
@@ -107,11 +103,7 @@ class VendorController extends Controller
         }
 
     }
-<<<<<<< HEAD
-
-=======
     
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
 
 
     public function updateKyc(Request $request, $userId){
@@ -280,15 +272,9 @@ class VendorController extends Controller
                         );
 
     }
-<<<<<<< HEAD
-
-
-
-=======
   
     
   
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
 
     public function allCategory(Request $request)
     {
@@ -296,15 +282,9 @@ class VendorController extends Controller
         $image_url  = env('IMAGE_URL',url::asset('storage/uploads/category/'));
         $catId      = null;
         $data        = [];
-<<<<<<< HEAD
-        try{
-
-        $url = url('/');
-=======
         try{ 
 
         $url = url('/'); 
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
         $data = \DB::table('categories')->select(\DB::raw('id as categoryId,category_name as categoryName'),\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath'))->where('parent_id',0)->get();
 
 
@@ -337,35 +317,20 @@ class VendorController extends Controller
     }
     // sub category
     public function subCategory(Request $request, $categoryId=null)
-<<<<<<< HEAD
-    {
-=======
     { 
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
 
         $image_url  = env('IMAGE_URL',url::asset('storage/uploads/category/'));
         $catId      = null;
         $data        = [];
-<<<<<<< HEAD
-        try{
-
-        $url = url('/');
-=======
         try{ 
 
         $url = url('/'); 
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
         $data = \DB::table('categories')->select(\DB::raw('id as categoryId,parent_id as parentCategoryId,category_name as categoryName'),\DB::raw('CONCAT("", "'.$url.'/", category_image) AS imagePath')
         )->where(function($q)use($categoryId){
             $q->where('parent_id',$categoryId);
         })->get();
-<<<<<<< HEAD
-
-
-=======
    
  
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
         }catch(\Exception $e){ dd($e);
             $data = [];
             $status = 0;
@@ -394,13 +359,6 @@ class VendorController extends Controller
 
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    // sub category
-    public function getProduct(Request $request, $vendorId=null)
-    {
-=======
-=======
     public function showDefaultProducts(Request $request){
 
 
@@ -447,46 +405,14 @@ class VendorController extends Controller
 
     }
 
->>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
      // sub category
     public function getProduct(Request $request, $vendorId=null)
     { 
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
 
         $image_url  = env('IMAGE_URL',url::asset('storage/uploads/category/'));
         $catId      = null;
         $data        = [];
-<<<<<<< HEAD
-        try{
-            $vendor_id = $vendorId;
-=======
         try{ 
-<<<<<<< HEAD
-            $vendor_id = $vendorId;   
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
-            $search = $request->get('productTitle');
-
-            $categoryArray = Category::where('category_name', 'LIKE', "%$search%")->pluck('id');
-            $category_id = $request->get('categoryId');
-            $product_ids = $request->get('productId');
-
-            $data = Product::with('category')->where(function ($query) use ($categoryArray,$category_id,$product_ids,$vendor_id) {
-                if (!empty($search)) {
-                    $query->Where('product_title', 'LIKE', "%$search%");
-                }
-                if (!empty($categoryArray)) {
-                    $query->orWhereIn('product_category', $categoryArray);
-                }
-                if ($category_id) {
-                    $query->orWhere('product_category', $category_id);
-                }
-<<<<<<< HEAD
-                if($product_ids || $vendor_id){
-=======
-                if($product_ids || $vendor_id){  
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
-                    $query->where('id', $vendor_id);
-=======
             $productFromVendor = \DB::table('vendor_products')->where('vendor_id',$vendorId)->pluck('product_id')->toArray();
 
             $data = Product::with(['category'=> function($query){
@@ -501,23 +427,12 @@ class VendorController extends Controller
                  
                 if($vendorId){  
                     $query->orWhere('vendor_id', $vendorId);
->>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
                 }
             })
            // ->whereHas('vendorProduct')
             ->orderBy('id', 'desc')
-<<<<<<< HEAD
-            ->get();
-<<<<<<< HEAD
-
-
-=======
-         
-=======
             ->get(); 
->>>>>>> 7e097fed0b9156ae1f6e64ba93d8d7d2c6d3005c
  
->>>>>>> 5588e18f1632523dd68e9d4f8a24d7bdca8596ad
         }catch(\Exception $e){ dd($e);
             $data = [];
             $status = 0;
