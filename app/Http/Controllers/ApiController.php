@@ -1119,6 +1119,7 @@ class ApiController extends Controller
             'productCategory' => 'required',
             'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
          ]);
+
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
@@ -1132,12 +1133,14 @@ class ApiController extends Controller
                 )
             );
         }
+
         $cat_url    = $this->getCategoryById($request->get('productCategory'));
         $pro_slug   = str_slug($request->get('productTitle'));
         $url        = $cat_url.$pro_slug;
         $product = new Product;
         $product->slug  = $pro_slug ;
         $product->url   = $url;
+
         try {
             \DB::beginTransaction();
             $table_cname = \Schema::getColumnListing('products');
@@ -1244,4 +1247,62 @@ class ApiController extends Controller
             ]
         );
     }
+
+    public function addDefaultProducts( Request $request ){
+
+        $validator = Validator::make($request->all(), [
+            'productId' => 'required',
+            'vendorId' => 'required',
+         ]);
+
+        if ($validator->fails()) {
+            $error_msg  =  [];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                'status' => 0,
+                'code'=>201,
+                'message' => $error_msg[0],
+                'data'  =>  $request->all()
+                )
+            );
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $vendorProduct =  VendorProduct::firstOrNew(
+                [
+                    'vendor_id'=>  $request->get('vendorId'),
+
+                    'product_id'=> $request->get('productId')
+                ]
+            );
+
+            $vendorProduct->vendor_id = $request->get('vendorId');
+
+            $vendorProduct->product_id = $request->get('productId');
+
+            $vendorProduct->save();
+
+            \DB::commit();
+
+            $msg = 'New Product was successfully created !';
+
+        } catch (\Exception $e) {
+             \DB::rollback();
+            $msg = $e->getMessage();
+        }
+
+        return response()->json(
+            [
+                "status"    =>  1,
+                "code"      =>  200,
+                "message"   =>  $msg,
+                'data'      =>  $request->all()
+            ]
+        );
+    }
+
 }

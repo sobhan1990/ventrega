@@ -66,6 +66,8 @@ Route::group([
 
         Route::match(['post','get'],'product/type', 'ApiController@getProductType');
 
+        Route::match(['post','get'],'vendore/addDefaultProduct', 'ApiController@addDefaultProducts');
+
 
         // update profile
         Route::match(['post','get'],'vendor/updateProfile/{userId}', 'ApiController@vendorUpdate');
