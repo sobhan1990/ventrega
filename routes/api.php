@@ -60,7 +60,7 @@ Route::group([
 
         Route::match(['post','get'],'vendore/addproduct', 'ApiController@AddVendorProduct');
 
-        Route::match(['post','get'],'vendore/deleteproduct', 'ApiController@destroy');
+        Route::match(['post','get'],'vendore/product/delete', 'ApiController@destroy');
 
         Route::match(['post','get'],'product/unit', 'ApiController@getProductUnit');
 
