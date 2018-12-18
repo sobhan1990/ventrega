@@ -54,6 +54,7 @@ Route::group([
         Route::match(['post','get'],'deliveryBoy/account/{userId}', 'ApiController@myAccount');
 
         //Rajendra Singh
+        
         Route::match(['post','get'],'member/account/{userId}', 'ApiController@userDetail');
 
         Route::match(['post','get'],'member/account/myprofile', 'ApiController@getUserDetails');
@@ -67,6 +68,16 @@ Route::group([
         Route::match(['post','get'],'product/type', 'ApiController@getProductType');
 
         Route::match(['post','get'],'vendore/addDefaultProduct', 'ApiController@addDefaultProducts');
+
+        Route::match(['get','post'],'generateEmailOtp',[
+            'as' => 'generateEmailOtp',
+            'uses' => 'ApiController@generateEmailOtp'
+        ]);
+
+        Route::match(['get','post'],'verifyEmailOtp',[
+            'as' => 'verifyEmailOtp',
+            'uses' => 'ApiController@verifyEmailOtp'
+        ]);
 
 
         // update profile
@@ -112,6 +123,8 @@ Route::group([
             'as' => 'verifyOtp',
             'uses' => 'ApiController@verifyOtp'
         ]);
+
+ 
         // if route not found
 	    Route::any('{any}', function(){
 				$data = [
