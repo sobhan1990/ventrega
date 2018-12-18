@@ -150,6 +150,7 @@ class ApiController extends Controller
                             ]
                         );
     }
+
     public function createImage($base64)
     {
         try{
@@ -275,6 +276,7 @@ class ApiController extends Controller
                 )
             );
         }
+
         $table_cname = \Schema::getColumnListing('users');
         $except = ['id','created_at','updated_at','profile_image','modeOfreach','email'];
         foreach ($table_cname as $key => $value) {
@@ -428,7 +430,9 @@ class ApiController extends Controller
     public function emailVerification(Request $request)
     {
         $verification_code = ($request->input('verification_code'));
+
         $email    = ($request->input('email'));
+
         if (Hash::check($email, $verification_code)) {
            $user = User::where('email',$email)->get()->count();
            if($user>0)
@@ -445,6 +449,7 @@ class ApiController extends Controller
             return response()->json([ "status"=>0,"message"=>"Verification link is invalid!" ,'data' => '']);
         }
     }
+
    /* @method : logout
     * @param : token
     * Response : "logout message"
@@ -620,6 +625,7 @@ class ApiController extends Controller
                 )
             );
         }
+        
         $user = User::where('email',$request->get('email'))->first();
         $user_id = $user->id;
         $old_password = $user->password;
@@ -1004,6 +1010,7 @@ class ApiController extends Controller
                         ]
         );
     }
+
     public function generateOtp(Request $request){
         $rs = $request->all();
         $validator = Validator::make($request->all(), [
@@ -1028,8 +1035,11 @@ class ApiController extends Controller
         $data['userId'] = $request->get('userId');
         $data['timezone'] = config('app.timezone');
         $data['mobile'] = $request->get('mobileNumber');
+
         \DB::table('mobile_otp')->insert($data);
+
         $this->sendSMS($request->get('mobileNumber'),$otp);
+
         return response()->json(
                         [
                             "status"    =>  count($data)?1:0,
@@ -1039,6 +1049,7 @@ class ApiController extends Controller
                         ]
         );
     }
+
     public function verifyOtp(Request $request){
         $rs = $request->all();
         $validator = Validator::make($request->all(), [
@@ -1078,6 +1089,7 @@ class ApiController extends Controller
                             ]
                 );
     }
+
     public function sendSMS($mobileNumber=null,$otp=null)
     {
         $curl = curl_init();
@@ -1118,7 +1130,7 @@ class ApiController extends Controller
             'storePrice' => 'required',
             'productCategory' => 'required',
             'photo' => 'mimes:jpeg,bmp,png,gif,jpg,PNG',
-         ]);
+        ]);
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
@@ -1143,9 +1155,11 @@ class ApiController extends Controller
             $table_cname = \Schema::getColumnListing('products');
             $except = ['id','created_at','updated_at','deleted_at','additional_images','btn_name'];
             foreach ($table_cname as $key => $value) {
+                
                if(in_array($value, $except )){
                     continue;
                }
+
                if($request->get(camel_case($value))){
                   $product->$value = $request->get(camel_case($value));
                 }
@@ -1163,6 +1177,7 @@ class ApiController extends Controller
             $vendorProduct->save();
             \DB::commit();
             $msg = 'New Product was successfully created !';
+
         } catch (\Exception $e) {
              \DB::rollback();
             $msg = $e->getMessage();
@@ -1178,15 +1193,17 @@ class ApiController extends Controller
     }
 
     public function destroy(Request $request) {
+
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required',
-            'vendor_id' => 'required'
-         ]);
+            'productId' => 'required',
+            'vendorId' => 'required'
+        ]);
+
         if ($validator->fails()) {
             $error_msg  =  [];
             foreach ( $validator->messages()->all() as $key => $value) {
-                        array_push($error_msg, $value);
-                    }
+                array_push($error_msg, $value);
+            }
             return Response::json(array(
                 'status' => 0,
                 'code'=>201,
@@ -1195,8 +1212,13 @@ class ApiController extends Controller
                 )
             );
         }
-        $product = Product::findOrFail($request->get('product_id'))->delete();
+
+        $product = VendorProduct::where('vendor_id',$request->get('vendorId'))
+        ->where('product_id',$request->get('productId'))
+        ->delete();
+
         $msg = 'Product was successfully deleted !';
+
         return response()->json(
             [
                 "status"    =>  1,
@@ -1244,4 +1266,168 @@ class ApiController extends Controller
             ]
         );
     }
+
+    public function addDefaultProducts( Request $request ){
+        $validator = Validator::make($request->all(), [
+            'productId' => 'required',
+            'vendorId' => 'required',
+         ]);
+        if ($validator->fails()) {
+            $error_msg  =  [];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                'status' => 0,
+                'code'=>201,
+                'message' => $error_msg[0],
+                'data'  =>  $request->all()
+                )
+            );
+        }
+        try {
+            \DB::beginTransaction();
+            $vendorProduct =  VendorProduct::firstOrNew(
+                [
+                    'vendor_id'=>  $request->get('vendorId'),
+                    'product_id'=> $request->get('productId')
+                ]
+            );
+            $vendorProduct->vendor_id = $request->get('vendorId');
+            $vendorProduct->product_id = $request->get('productId');
+            $vendorProduct->save();
+            \DB::commit();
+            $msg = 'New Product was successfully created !';
+
+        } catch (\Exception $e) {
+             \DB::rollback();
+            $msg = $e->getMessage();
+        }
+        return response()->json(
+            [
+                "status"    =>  1,
+                "code"      =>  200,
+                "message"   =>  $msg,
+                'data'      =>  $request->all()
+            ]
+        );
+    }
+
+
+    public function generateEmailOtp(Request $request){
+
+        $rs = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'userId' => "required",
+            'emailAddress' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            $error_msg = [];
+            foreach ($validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                        'status' => 0,
+                        'code' => 500,
+                        'message' => $error_msg[0],
+                        'data' => $request->all()
+                    )
+            );
+        }
+
+        $user =   User::where('email',$request->get('emailAddress'))
+        ->where('id',$request->get('userId'))
+        ->first();
+
+        if($user==null){
+            return Response::json(array(
+                'status' => 0,
+                'code' => 500,
+                'message' => "The email address or User ID you provided isn't in our system",
+                'data'  =>  $request->all()
+                )
+            );
+        }
+
+        $otp = mt_rand(1000, 9999);
+        $data['otp'] = $otp;
+        $data['userId'] = $user->id;
+        $data['timezone'] = config('app.timezone');
+        $data['mobile'] = $user->email;
+
+        \DB::table('mobile_otp')->insert($data);
+
+        $email_content = array(
+            'receipent_email'   => $user->email,
+            'first_name'        => $user->first_name.' '.$user->last_name,
+            'subject'           => 'Otp Email Verification',
+            'otp'               => $otp,
+            'greeting'          => 'Ventrega Team'
+        );
+
+        $helper = new Helper;
+        $email_response = $helper->sendMail(
+                    $email_content,
+                    'otp_mail'
+                );
+
+           return   response()->json(
+                [
+                    "status"=>1,
+                    "code"=> 200,
+                    "message"=>"Otp has sent. Please check your email.",
+                    'data' => $request->all()
+                ]
+            );
+    }
+
+
+    public function verifyEmailOtp(Request $request){
+
+        $rs = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'otp' => "required",
+            'userId' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $error_msg = [];
+            foreach ($validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                        'status' => 0,
+                        'code' => 500,
+                        'message' => $error_msg[0],
+                        'data' => $request->all()
+                    )
+            );
+        }
+
+        $data = \DB::table('mobile_otp')
+                    ->where('otp',$request->get('otp'))
+                        ->where('userId',$request->get('userId'))->first();
+                        
+        if($data){
+             \DB::table('mobile_otp')
+                    ->where('otp',$request->get('otp'))
+                        ->where('userId',$request->get('userId'))->update(['is_verified'=>1]);
+            \DB::table('users')
+                        ->where('id',$request->get('userId'))
+                        ->update(['email'=>$data->mobile]);
+        }
+            return response()->json(
+                            [
+                                "status"    =>  count($data)?1:0,
+                                'code'      =>  count($data)?200:500,
+                                "message"   =>  count($data)?"Otp Verified":"Invalid Otp",
+                                'data'      =>  $request->all()
+                            ]
+                );
+    }
+
+
 }
