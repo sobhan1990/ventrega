@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{$website_title??'Ventrega'}}</title>
+        <title>{{$website_title??'Deliverdas'}}</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
@@ -79,7 +79,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                   Ventrega
+                   Deliverdas
                 </div>
 
                 <div class="links">
